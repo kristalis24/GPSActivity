@@ -1,0 +1,7 @@
+<resources>
+    <string name="title_activity_gps">GPSActivity</string>
+    <string name="view_header">Press button to recording your track.</string>
+    <string name="btn_gps">RECORD YOUR TRACK</string>
+    <string name="btn_gps_last">VIEW YOUR LAST TRACKS</string>
+    <string name="position_ich">Hier bin Ich!</string>
+</resources>
