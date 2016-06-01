@@ -104,10 +104,7 @@ public class GeoPositionsService extends Service implements LocationListener, Co
 
     private boolean isGooglePlayServiceAvailable() {
         int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (errorCode != ConnectionResult.SUCCESS) {
-            return false;
-        }
-        return true;
+        return errorCode == ConnectionResult.SUCCESS;
     }
 
     private void starteGeoProvider(){

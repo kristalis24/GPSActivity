@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -34,13 +35,14 @@ import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService.GeoPositions
 public class KarteAnzeigen extends Activity{
 
     private static final float DEFAULT_ZOOM_LEVEL = 17.5f;
-    private static Location mMeinePosition;
+    private static final String TAG =KarteAnzeigen.class.getSimpleName();
+    public static Location mMeinePosition;
     private Marker mMeinMarker;
     private MapView mMapView;
     private GoogleMap mMap;
     public static final String IN_PARAM_GEO_POSITION = "location";
     public static final int TYP_EIGENE_POSITION = 1;
-    private static boolean mPositionNachverfolgen;
+    public static boolean mPositionNachverfolgen;
     private static Handler mKarteAnzeigenCallbackHandler;
     private Polyline mVerbindungslinie;
 
@@ -142,7 +144,12 @@ public class KarteAnzeigen extends Activity{
         final Bundle bundle = msg.getData();
         if (bundle != null){
             final Location location = (Location) bundle.get(KarteAnzeigen.IN_PARAM_GEO_POSITION);
-            final LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+            if (location == null){
+                Log.d(TAG, "-----> location ist NULL <---");
+            } else {
+                Log.d(TAG, "-----> location ist nicht NULL <---");
+            }
+            final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
             final int typ = msg.what;
 
@@ -193,7 +200,7 @@ public class KarteAnzeigen extends Activity{
         private WeakReference<KarteAnzeigen> mActivity;
 
         KarteAnzeigenCallbackHandler(KarteAnzeigen acticity){
-            mActivity = new WeakReference<KarteAnzeigen>(acticity);
+            mActivity = new WeakReference<>(acticity);
         }
 
         @Override
