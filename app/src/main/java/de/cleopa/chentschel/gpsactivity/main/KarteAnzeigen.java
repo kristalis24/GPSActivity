@@ -27,6 +27,8 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.lang.ref.WeakReference;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import de.cleopa.chentschel.gpsactivity.R;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
@@ -42,7 +44,7 @@ public class KarteAnzeigen extends Activity{
     private MapView mMapView;
     private GoogleMap mMap;
     public static final String IN_PARAM_GEO_POSITION = "location";
-    public static final int TYP_EIGENE_POSITION = 1;
+//    public static final int TYP_EIGENE_POSITION = 1;
     public static boolean mPositionNachverfolgen;
     private static Handler mKarteAnzeigenCallbackHandler;
     private Polyline mVerbindungslinie;
@@ -152,80 +154,62 @@ public class KarteAnzeigen extends Activity{
         return true;
     }
 
-    public void handleMessage(Message msg){
+    public void handleMessage(Message msg) {
         final Bundle bundle = msg.getData();
-        if (bundle != null){
+        if (bundle != null) {
             final Location location = (Location) bundle.get(KarteAnzeigen.IN_PARAM_GEO_POSITION);
 
-            if (location == null){
+            if (location == null) {
                 Log.d(TAG, "-----> location ist NULL <---");
             } else {
                 Log.d(TAG, "-----> location ist nicht NULL <---");
             }
 
-//            final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            final LatLng latLng = new LatLng(52.1152637, 13.7066272);
-            LatLng latLngA = new LatLng(52.1152637, 13.5000000);
-            Log.d(TAG, "handleMessage latlng: "+ latLng + "bundle:" +bundle.toString());
+            final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+            Log.d(TAG, "handleMessage latlng: " + latLng + "bundle:" + bundle.toString());
 
             //final int typ = msg.what;
 
             final MarkerOptions markerOption = new MarkerOptions();
             markerOption.position(latLng);
 
-//            if (typ == TYP_EIGENE_POSITION){
-                mMeinePosition = location;
-//                if (mMap != null){
-//                    if (mMeinMarker != null){
-//                        mMeinMarker.remove();
-//                    }
+//            mMeinePosition = location;
 
-                    markerOption.title(getString(R.string.position_ich));
-                    mMeinMarker = mMap.addMarker(markerOption);
-                    mMeinMarker.showInfoWindow();
+            markerOption.title(getString(R.string.position_ich));  // TODO: Hier Adresse anzeigen
+            mMeinMarker = mMap.addMarker(markerOption);
+            mMeinMarker.showInfoWindow();
 
-                    if (!mPositionNachverfolgen){
-                        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                    }
+            if (!mPositionNachverfolgen) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+            }
 
+//            LatLng latLngA;
+            LatLng latLngA = new LatLng(location.getLatitude(), location.getLongitude());
 
-//                if (mMeinePosition != null){
-//                    if (mVerbindungslinie != null){
-//                        mVerbindungslinie.remove();
-//                    }
+            if (!latLng.equals(latLngA)) {
 
-//                    mVerbindungslinie = mMap.addPolyline(new PolylineOptions()
-//                            .add(latLng, new LatLng(
-//                                    mMeinePosition.getLatitude(), mMeinePosition.getLongitude())).width(5).color(Color.BLUE));
+                mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLng, latLngA).width(5).color(Color.BLUE));
 
-            Log.d(TAG,"\nlatlng: "+latLng);
+                Log.d(TAG, "\nnew latlng: " + latLng);
+                Log.d(TAG, "\n\nmVerbindungslinie: " + mVerbindungslinie.getPoints().toString() + "    mVlatlng: " + latLng + "    mVlatLngA: " + latLngA);
 
-                    mVerbindungslinie = mMap.addPolyline(new PolylineOptions()
-                            .add(latLng, latLngA).width(5).color(Color.BLUE));
-
-            Log.d(TAG,"\nnew latlng: "+latLng);
-
-                    Log.d(TAG, "\n\nmVerbindungslinie: "+ mVerbindungslinie.getPoints().toString() + "    mVlatlng: "+ latLng);
-
-            markerOption.position(latLngA);
-            markerOption.title("Punkt 2");
-            mMeinMarker2 = mMap.addMarker(markerOption);
-            mMeinMarker2.showInfoWindow();
-
-                }
-
+                markerOption.position(latLngA);
+//                markerOption.title("Punkt 2");
+                mMeinMarker2 = mMap.addMarker(markerOption);
+                mMeinMarker2.showInfoWindow();
+            }
         }
-//    }
+    }
 
     private ServiceConnection mGeoPositionsServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder binder) {
             ((GeoPositionsServiceBinder) binder).setzeActivityCallbackHandler(mKarteAnzeigenCallbackHandler);
         }
-        @Override
-        public void onServiceDisconnected(ComponentName className) {
 
-        }
+        @Override
+        public void onServiceDisconnected(ComponentName className) {    }
     };
 
     static class KarteAnzeigenCallbackHandler extends Handler{

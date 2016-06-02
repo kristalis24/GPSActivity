@@ -46,7 +46,7 @@ public class GeoPositionsService extends Service implements LocationListener, Co
 
             final Message msg = new Message();
             msg.setData(bundle);
-            msg.what = KarteAnzeigen.TYP_EIGENE_POSITION;
+//            msg.what = KarteAnzeigen.TYP_EIGENE_POSITION;
 
             mKarteAnzeigenCallbackHandler.sendMessage(msg);
         }
@@ -118,16 +118,12 @@ public class GeoPositionsService extends Service implements LocationListener, Co
 
     public class GeoPositionsServiceBinder extends Binder{
 
-        public GpsData getGpsData(){
-            return mGpsData;
-        }
+//        public GpsData getGpsData(){return mGpsData;}
 
         public void setzeActivityCallbackHandler(final Handler callback){
             mKarteAnzeigenCallbackHandler = callback;
         }
 
-        public void restarteGeoProvider(){
-            starteGeoProvider();
-        }
+//        public void restarteGeoProvider(){starteGeoProvider();}
     }
 }
