@@ -27,8 +27,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.lang.ref.WeakReference;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 import de.cleopa.chentschel.gpsactivity.R;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
@@ -40,7 +38,6 @@ public class KarteAnzeigen extends Activity{
     private static final String TAG =KarteAnzeigen.class.getSimpleName();
     public static Location mMeinePosition;
     private Marker mMeinMarker;
-    private Marker mMeinMarker2;
     private MapView mMapView;
     private GoogleMap mMap;
     public static final String IN_PARAM_GEO_POSITION = "location";
@@ -169,11 +166,12 @@ public class KarteAnzeigen extends Activity{
 
             Log.d(TAG, "handleMessage latlng: " + latLng + "bundle:" + bundle.toString());
 
-            //final int typ = msg.what;
+//            final int typ = msg.what;
 
             final MarkerOptions markerOption = new MarkerOptions();
             markerOption.position(latLng);
 
+//
 //            mMeinePosition = location;
 
             markerOption.title(getString(R.string.position_ich));  // TODO: Hier Adresse anzeigen
@@ -196,7 +194,7 @@ public class KarteAnzeigen extends Activity{
 
                 markerOption.position(latLngA);
 //                markerOption.title("Punkt 2");
-                mMeinMarker2 = mMap.addMarker(markerOption);
+                Marker mMeinMarker2 = mMap.addMarker(markerOption);
                 mMeinMarker2.showInfoWindow();
             }
         }

@@ -34,6 +34,13 @@ public class GeoPositionsService extends Service implements LocationListener, Co
     private static final long UPDATE_INTERVAL = 15000;
     private static final long SCHNELLSTES_INTERVAL = 5000;
 
+    /**
+     * onLocationChanged(): Update der GPS-Koordinaten alle 5sek. beim SCHNELLSTES_INTERVAL
+     *                      bzw. alle 15sek bei UPDATE_INTERVAL
+     *
+     * @param location = GPS-Koordinaten (double Breitengrad, double Längengrad)
+     */
+
     @Override
     public void onLocationChanged(Location location) {
         if (location != null){
