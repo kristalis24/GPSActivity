@@ -32,16 +32,17 @@ import de.cleopa.chentschel.gpsactivity.R;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService.GeoPositionsServiceBinder;
 
-public class KarteAnzeigen extends Activity{
+public class KarteAnzeigen extends Activity implements GoogleMap.OnMarkerClickListener{
 
-    private static final float DEFAULT_ZOOM_LEVEL = 17.5f;
     private static final String TAG =KarteAnzeigen.class.getSimpleName();
+    private static final float DEFAULT_ZOOM_LEVEL = 17.5f;
     public static Location mMeinePosition;
     private Marker mMeinMarker;
+    private Marker mMeinMarker2;
     private MapView mMapView;
     private GoogleMap mMap;
     public static final String IN_PARAM_GEO_POSITION = "location";
-//    public static final int TYP_EIGENE_POSITION = 1;
+    public static final int TYP_EIGENE_POSITION = 1;
     public static boolean mPositionNachverfolgen;
     private static Handler mKarteAnzeigenCallbackHandler;
     private Polyline mVerbindungslinie;
@@ -71,6 +72,14 @@ public class KarteAnzeigen extends Activity{
 
         final Intent geoIntent = new Intent(this, GeoPositionsService.class);
         bindService(geoIntent, mGeoPositionsServiceConnection, Context.BIND_AUTO_CREATE);
+
+        mMap.setOnMarkerClickListenee(this);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker){
+        marker.showInfoWindow();
+        return true;
     }
 
     @Override
@@ -163,30 +172,27 @@ public class KarteAnzeigen extends Activity{
             }
 
             final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            final LatLng latLngA = new LatLng(location.getLatitude(), location.getLongitude());
 
-            Log.d(TAG, "handleMessage latlng: " + latLng + "bundle:" + bundle.toString());
+//            if (!latLng.equals(latLngA)) {
+//            Log.d(TAG, "-----> handleMessage: " + latLng + " == "+latLngA+" -*-*-*- bundle.toString(): " + bundle.toString());
 
-//            final int typ = msg.what;
+            final int typ = msg.what;
 
             final MarkerOptions markerOption = new MarkerOptions();
             markerOption.position(latLng);
 
-//
-//            mMeinePosition = location;
+            if(typ == TYP_EIGENE_POSITION) {
+                mMeinePosition = location;
 
-            markerOption.title(getString(R.string.position_ich));  // TODO: Hier Adresse anzeigen
-            mMeinMarker = mMap.addMarker(markerOption);
-            mMeinMarker.showInfoWindow();
+                markerOption.title(getString(R.string.position_ich));  // TODO: Hier Adresse anzeigen
+                mMeinMarker = mMap.addMarker(markerOption);
+                mMeinMarker.showInfoWindow();
 
-            if (!mPositionNachverfolgen) {
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                if (!mPositionNachverfolgen) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                }
             }
-
-//            LatLng latLngA;
-            LatLng latLngA = new LatLng(location.getLatitude(), location.getLongitude());
-
-            if (!latLng.equals(latLngA)) {
-
                 mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLng, latLngA).width(5).color(Color.BLUE));
 
                 Log.d(TAG, "\nnew latlng: " + latLng);
@@ -194,9 +200,9 @@ public class KarteAnzeigen extends Activity{
 
                 markerOption.position(latLngA);
 //                markerOption.title("Punkt 2");
-                Marker mMeinMarker2 = mMap.addMarker(markerOption);
+                mMeinMarker2 = mMap.addMarker(markerOption);
                 mMeinMarker2.showInfoWindow();
-            }
+//            }
         }
     }
 
