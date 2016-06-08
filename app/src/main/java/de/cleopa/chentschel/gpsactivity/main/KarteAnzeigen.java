@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import de.cleopa.chentschel.gpsactivity.R;
@@ -34,8 +36,8 @@ import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService.GeoPositions
 
 public class KarteAnzeigen extends Activity{
 
-    private static final float DEFAULT_ZOOM_LEVEL = 17.5f;
     private static final String TAG =KarteAnzeigen.class.getSimpleName();
+    private static final float DEFAULT_ZOOM_LEVEL = 17.5f;
     public static Location mMeinePosition;
     private Marker mMeinMarker;
     private MapView mMapView;
@@ -163,8 +165,11 @@ public class KarteAnzeigen extends Activity{
             }
 
             final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            final LatLng latLngA = new LatLng(location.getLatitude(), location.getLongitude());
 
-            Log.d(TAG, "handleMessage latlng: " + latLng + "bundle:" + bundle.toString());
+            if (latLng.equals(latLngA)) {
+
+                Log.d(TAG, "-----> handleMessage: " + latLng + " == "+latLngA+" -*-*-*- bundle.toString(): " + bundle.toString());
 
 //            final int typ = msg.what;
 
@@ -174,19 +179,13 @@ public class KarteAnzeigen extends Activity{
 //
 //            mMeinePosition = location;
 
-            markerOption.title(getString(R.string.position_ich));  // TODO: Hier Adresse anzeigen
+            markerOption.title(getAddressFromLatLng(latLng));  // TODO: Hier Adresse anzeigen
             mMeinMarker = mMap.addMarker(markerOption);
             mMeinMarker.showInfoWindow();
 
             if (!mPositionNachverfolgen) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
             }
-
-//            LatLng latLngA;
-            LatLng latLngA = new LatLng(location.getLatitude(), location.getLongitude());
-
-            if (!latLng.equals(latLngA)) {
-
                 mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLng, latLngA).width(5).color(Color.BLUE));
 
                 Log.d(TAG, "\nnew latlng: " + latLng);
@@ -198,6 +197,21 @@ public class KarteAnzeigen extends Activity{
                 mMeinMarker2.showInfoWindow();
             }
         }
+    }
+
+    private String getAddressFromLatLng(LatLng latLng){
+        Geocoder geocoder = new Geocoder(getBaseContext());
+
+        String address = "";
+
+        try {
+            address=geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1).get(0).getAddressLine(0);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return address;
     }
 
     private ServiceConnection mGeoPositionsServiceConnection = new ServiceConnection() {
