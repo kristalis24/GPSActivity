@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import de.cleopa.chentschel.gpsactivity.R;
+import de.cleopa.chentschel.gpsactivity.androidgpx.data.GPXDocument;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService.GeoPositionsServiceBinder;
 
@@ -48,7 +49,7 @@ public class KarteAnzeigen extends Activity{
     private static Handler mKarteAnzeigenCallbackHandler;
     private Polyline mVerbindungslinie;
 
-
+    public static GPXDocument mDocument = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,6 @@ public class KarteAnzeigen extends Activity{
         if (mMap != null && mMeinMarker != null){
                     mMeinMarker.remove();
         }
-
 
         mKarteAnzeigenCallbackHandler = new KarteAnzeigenCallbackHandler(this);
 
@@ -179,7 +179,7 @@ public class KarteAnzeigen extends Activity{
 //
 //            mMeinePosition = location;
 
-            markerOption.title(getAddressFromLatLng(latLng));  // TODO: Hier Adresse anzeigen
+            markerOption.title(getAddressFromLatLng(latLng));
             mMeinMarker = mMap.addMarker(markerOption);
             mMeinMarker.showInfoWindow();
 
