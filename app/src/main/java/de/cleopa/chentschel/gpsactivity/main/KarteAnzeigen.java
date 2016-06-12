@@ -118,6 +118,63 @@ public class KarteAnzeigen extends Activity{
         mMapView.onSaveInstanceState(outState);
     }
 
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        super.onCreateOptionsMenu(menu);
+//        menu.add(Menu.NONE, 0, 0, "Exit");
+//        menu.add(Menu.NONE, 1, 1, "Upload");
+//        return true;
+//    }
+//
+//    public boolean onOptionsItemSelected(MenuItem item){
+//        switch (item.getItemId()) {
+//            case 0:
+//                try {
+//                    uploadFile(openFileInput("location.dat"), "location.dat");
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//                finish();
+//            case 1:
+//                try {
+//                    uploadFile(openFileInput("location.dat"), "location.dat");
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//        }
+//        return false;
+//    }
+//
+//    void uploadFile(FileInputStream fin, String filestr) {
+//        String urlstr = "http://website/upload.php";
+//        String boundary = "-------------------XYZ12345XYZ";
+//        String imgheader = "Content-Disposition: form-data; name="+" uploadedfile";
+//        String filename="" + filestr + "" + "Content-Type: text/plain" + "";
+//
+//        try {
+//            URLConnection uc = (HttpURLConnection)(new URL(urlstr)).openConnection();
+//            uc.setDoOutput(true);
+//            uc.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+//            OutputStream out = uc.getOutputStream();
+//            out.write(("--"+boundary+"").getBytes());
+//            out.write(imgheader.getBytes());
+//            byte[] buf = new byte[4096];
+//            int len;
+//            while ((len = fin.read(buf)) > 0) {
+//                out.write(buf, 0, len);
+//            }
+//            out.write(("--"+boundary+" ").getBytes());
+//            out.flush();
+//            out.close();
+//            fin.close();
+//        } catch(MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//        catch(IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     private void initMapView(){
         boolean usePlayService = isGooglePlayServiceAvailable();
         if (usePlayService){
