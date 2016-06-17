@@ -32,8 +32,12 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="de.cleopa.chentschel.gpsactivity.main.GPSActivity"
-            android:label="@string/title_activity_gps">
+            android:name="de.cleopa.chentschel.gpsactivity.main.AndroidGPSTrackingActivity"
+            android:label="@string/title_activity_gps_tracking">
+
+            <!--android:name="de.cleopa.chentschel.gpsactivity.main.GPSActivity"-->
+            <!--android:label="@string/title_activity_gps">-->
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

@@ -1,6 +1,9 @@
 package de.cleopa.chentschel.gpsactivity.service;
 
+import android.app.AlertDialog;
 import android.app.Service;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Binder;
@@ -8,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
@@ -19,6 +23,7 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
+import de.cleopa.chentschel.gpsactivity.main.GPSTracker;
 import de.cleopa.chentschel.gpsactivity.main.GpsData;
 import de.cleopa.chentschel.gpsactivity.main.KarteAnzeigen;
 
@@ -49,7 +54,7 @@ public class GeoPositionsService extends Service implements LocationListener, Co
 
         if (mKarteAnzeigenCallbackHandler != null){
             final Bundle bundle = new Bundle();
-            bundle.putParcelable(KarteAnzeigen.IN_PARAM_GEO_POSITION, location);
+            bundle.putParcelable("location", location);
 
             final Message msg = new Message();
             msg.setData(bundle);
@@ -101,14 +106,10 @@ public class GeoPositionsService extends Service implements LocationListener, Co
     }
 
     @Override
-    public void onDisconnected(){
+    public void onDisconnected() {
 
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
 
     private boolean isGooglePlayServiceAvailable() {
         int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
@@ -122,6 +123,11 @@ public class GeoPositionsService extends Service implements LocationListener, Co
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         mLocationRequest.setFastestInterval(SCHNELLSTES_INTERVAL);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 
     public class GeoPositionsServiceBinder extends Binder{
