@@ -215,11 +215,11 @@ public class KarteAnzeigen extends Activity{
     public void handleMessage(Message msg) {
         final Bundle bundle = msg.getData();
 //        if (bundle != null) {
-//            final Location location = (Location) bundle.get("location");
+            final Location location = (Location) bundle.get("location");
 //          Location location = mMeinePosition;
 
-//            final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            latLng = new LatLng(mMeinePosition.getLatitude(), mMeinePosition.getLongitude());
+            final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//            latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
 
 //            final int typ = msg.what;
@@ -237,12 +237,15 @@ public class KarteAnzeigen extends Activity{
 //            if (!mPositionNachverfolgen) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 //            }
-                mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLng, latLngA).width(5).color(Color.BLUE));
 
 //                Log.d(TAG, "\nnew latlng: " + latLng);
 //                Log.d(TAG, "\n\nmVerbindungslinie: " + mVerbindungslinie.getPoints().toString() + "    mVlatlng: " + latLng + "    mVlatLngA: " + latLngA);
 
-                markerOption.position(latLngA);
+            latLngA = new LatLng(location.getLatitude(), location.getLongitude());
+
+            mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLng, latLngA).width(5).color(Color.BLUE));
+
+            markerOption.position(latLngA);
 //                markerOption.title("Punkt 2");
                 Marker mMeinMarker2 = mMap.addMarker(markerOption);
                 mMeinMarker2.showInfoWindow();

@@ -1,5 +1,5 @@
 <resources>
-    <string name="title_activity_gps_tracking">GPSTracking Activity</string>
+    <string name="title_activity_gps_tracking">GPS Tracking Activity</string>
     <string name="title_activity_gps">GPSActivity</string>
     <string name="view_header">Press button to recording your track.</string>
     <string name="btn_gps">RECORD YOUR TRACK</string>

@@ -24,7 +24,7 @@ public class GPSActivity extends Activity{//implements GpxParser.GpxParserListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gpsactivity);
         setTitle(R.string.title_activity_gps);
-        showSettingsAlert();
+//        showSettingsAlert();
         startService(new Intent(this, GeoPositionsService.class));
     }
 
