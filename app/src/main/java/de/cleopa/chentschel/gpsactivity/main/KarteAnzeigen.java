@@ -226,10 +226,6 @@ public class KarteAnzeigen extends Activity{
 
             final MarkerOptions markerOption = new MarkerOptions();
             markerOption.position(latLng);
-
-//
-//            mMeinePosition = location;
-
             markerOption.title(getAddressFromLatLng(latLng));
             mMeinMarker = mMap.addMarker(markerOption);
             mMeinMarker.showInfoWindow();
@@ -241,14 +237,14 @@ public class KarteAnzeigen extends Activity{
 //                Log.d(TAG, "\nnew latlng: " + latLng);
 //                Log.d(TAG, "\n\nmVerbindungslinie: " + mVerbindungslinie.getPoints().toString() + "    mVlatlng: " + latLng + "    mVlatLngA: " + latLngA);
 
-            latLngA = new LatLng(location.getLatitude(), location.getLongitude());
+//            latLngA = new LatLng(location.getLatitude(), location.getLongitude());
 
-            mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLng, latLngA).width(5).color(Color.BLUE));
+            mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLng, new LatLng(location.getLatitude(), location.getLongitude())).width(5).color(Color.BLUE));
 
-            markerOption.position(latLngA);
-//                markerOption.title("Punkt 2");
-                Marker mMeinMarker2 = mMap.addMarker(markerOption);
-                mMeinMarker2.showInfoWindow();
+//            markerOption.position(latLng);
+//            markerOption.title(getAddressFromLatLng(latLng));
+//            Marker mMeinMarker2 = mMap.addMarker(markerOption);
+//            mMeinMarker2.showInfoWindow();
 
 //        }
     }
