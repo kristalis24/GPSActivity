@@ -228,6 +228,8 @@ public class KarteAnzeigen extends Activity{
             markerOption.position(latLng);
             markerOption.title(getAddressFromLatLng(latLng));
             mMeinMarker = mMap.addMarker(markerOption);
+            mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLng, new LatLng(location.getLatitude(), location.getLongitude())).width(5).color(Color.BLUE));
+
             mMeinMarker.showInfoWindow();
 
 //            if (!mPositionNachverfolgen) {
@@ -238,8 +240,6 @@ public class KarteAnzeigen extends Activity{
 //                Log.d(TAG, "\n\nmVerbindungslinie: " + mVerbindungslinie.getPoints().toString() + "    mVlatlng: " + latLng + "    mVlatLngA: " + latLngA);
 
 //            latLngA = new LatLng(location.getLatitude(), location.getLongitude());
-
-            mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLng, new LatLng(location.getLatitude(), location.getLongitude())).width(5).color(Color.BLUE));
 
 //            markerOption.position(latLng);
 //            markerOption.title(getAddressFromLatLng(latLng));
