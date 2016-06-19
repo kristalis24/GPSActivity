@@ -50,7 +50,6 @@ public class KarteAnzeigen extends Activity{
     private Polyline mVerbindungslinie;
     LatLng latLngA;
     LatLng latLng;
-
     public static GPXDocument mDocument = null;
 
     @Override
@@ -61,16 +60,13 @@ public class KarteAnzeigen extends Activity{
         if (mMeinePosition != null && mVerbindungslinie != null){
                 mVerbindungslinie.remove();
         }
-
         if (mMap != null && mMeinMarker != null){
                     mMeinMarker.remove();
         }
 
         mKarteAnzeigenCallbackHandler = new KarteAnzeigenCallbackHandler(this);
-
         mMapView = (MapView) findViewById(R.id.karte_anzeigen);
         mMapView.onCreate(savedInstanceState);
-
         initMapView();
 
         final Intent geoIntent = new Intent(this, GeoPositionsService.class);
@@ -81,10 +77,8 @@ public class KarteAnzeigen extends Activity{
     protected void onDestroy(){
         mMapView.onDestroy();
         mKarteAnzeigenCallbackHandler.removeCallbacksAndMessages(null);
-
         unbindService(mGeoPositionsServiceConnection);
         stopService(new Intent(this, GeoPositionsService.class));
-
         super.onDestroy();
     }
 
@@ -120,70 +114,15 @@ public class KarteAnzeigen extends Activity{
         mMapView.onSaveInstanceState(outState);
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        super.onCreateOptionsMenu(menu);
-//        menu.add(Menu.NONE, 0, 0, "Exit");
-//        menu.add(Menu.NONE, 1, 1, "Upload");
-//        return true;
-//    }
-//
-//    public boolean onOptionsItemSelected(MenuItem item){
-//        switch (item.getItemId()) {
-//            case 0:
-//                try {
-//                    uploadFile(openFileInput("location.dat"), "location.dat");
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-//                finish();
-//            case 1:
-//                try {
-//                    uploadFile(openFileInput("location.dat"), "location.dat");
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-//        }
-//        return false;
-//    }
-//
-//    void uploadFile(FileInputStream fin, String filestr) {
-//        String urlstr = "http://website/upload.php";
-//        String boundary = "-------------------XYZ12345XYZ";
-//        String imgheader = "Content-Disposition: form-data; name="+" uploadedfile";
-//        String filename="" + filestr + "" + "Content-Type: text/plain" + "";
-//
-//        try {
-//            URLConnection uc = (HttpURLConnection)(new URL(urlstr)).openConnection();
-//            uc.setDoOutput(true);
-//            uc.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-//            OutputStream out = uc.getOutputStream();
-//            out.write(("--"+boundary+"").getBytes());
-//            out.write(imgheader.getBytes());
-//            byte[] buf = new byte[4096];
-//            int len;
-//            while ((len = fin.read(buf)) > 0) {
-//                out.write(buf, 0, len);
-//            }
-//            out.write(("--"+boundary+" ").getBytes());
-//            out.flush();
-//            out.close();
-//            fin.close();
-//        } catch(MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//        catch(IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private void initMapView(){
         boolean usePlayService = isGooglePlayServiceAvailable();
+
         if (usePlayService){
             MapsInitializer.initialize(this);
 
             if (mMap == null){
                 mMap = mMapView.getMap();
+
                 if (mMap != null){
                     mMap.getUiSettings().setZoomControlsEnabled(true);
                     mMap.getUiSettings().setCompassEnabled(true);
@@ -191,7 +130,6 @@ public class KarteAnzeigen extends Activity{
                     mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                     mMap.setIndoorEnabled(true);
                     mMap.setTrafficEnabled(true);
-
                     mMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM_LEVEL));
                 }
             }
@@ -214,44 +152,27 @@ public class KarteAnzeigen extends Activity{
 
     public void handleMessage(Message msg) {
         final Bundle bundle = msg.getData();
-//        if (bundle != null) {
-            final Location location = (Location) bundle.get("location");
-//          Location location = mMeinePosition;
-
-            final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//            latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-
-//            final int typ = msg.what;
-
-            final MarkerOptions markerOption = new MarkerOptions();
-            markerOption.position(latLng);
-            markerOption.title(getAddressFromLatLng(latLng));
-            mMeinMarker = mMap.addMarker(markerOption);
-            mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLng, new LatLng(location.getLatitude(), location.getLongitude())).width(5).color(Color.BLUE));
-
-            mMeinMarker.showInfoWindow();
-
-//            if (!mPositionNachverfolgen) {
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-//            }
-
-//                Log.d(TAG, "\nnew latlng: " + latLng);
-//                Log.d(TAG, "\n\nmVerbindungslinie: " + mVerbindungslinie.getPoints().toString() + "    mVlatlng: " + latLng + "    mVlatLngA: " + latLngA);
+        final Location location = (Location) bundle.get("location");
+        final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        final MarkerOptions markerOption = new MarkerOptions();
+        markerOption.position(latLng);
+        markerOption.title(getAddressFromLatLng(latLng));
+        mMeinMarker = mMap.addMarker(markerOption);
+        mMeinMarker.showInfoWindow();
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
 //            latLngA = new LatLng(location.getLatitude(), location.getLongitude());
+
+//            mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLng, new LatLng(location.getLatitude(), location.getLongitude())).width(5).color(Color.BLUE));
 
 //            markerOption.position(latLng);
 //            markerOption.title(getAddressFromLatLng(latLng));
 //            Marker mMeinMarker2 = mMap.addMarker(markerOption);
 //            mMeinMarker2.showInfoWindow();
-
-//        }
     }
 
     private String getAddressFromLatLng(LatLng latLng){
         Geocoder geocoder = new Geocoder(getBaseContext());
-
         String address = "";
 
         try {
@@ -260,7 +181,6 @@ public class KarteAnzeigen extends Activity{
         catch (IOException e){
             e.printStackTrace();
         }
-
         return address;
     }
 
@@ -271,7 +191,8 @@ public class KarteAnzeigen extends Activity{
         }
 
         @Override
-        public void onServiceDisconnected(ComponentName className) {    }
+        public void onServiceDisconnected(ComponentName className) {
+        }
     };
 
     static class KarteAnzeigenCallbackHandler extends Handler{

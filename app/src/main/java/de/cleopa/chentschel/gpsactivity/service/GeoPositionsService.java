@@ -35,7 +35,6 @@ public class GeoPositionsService extends Service implements LocationListener, Co
     private Handler mKarteAnzeigenCallbackHandler;
     private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
-
     private static final long UPDATE_INTERVAL = 15000;
     private static final long SCHNELLSTES_INTERVAL = 5000;
 
@@ -45,22 +44,16 @@ public class GeoPositionsService extends Service implements LocationListener, Co
      *
      * @param location = GPS-Koordinaten (double Breitengrad, double Längengrad)
      */
-
     @Override
     public void onLocationChanged(Location location) {
         if (location != null){
             mGpsData = new GpsData(location);
         }
-
         if (mKarteAnzeigenCallbackHandler != null){
             final Bundle bundle = new Bundle();
             bundle.putParcelable("location", location);
-
             final Message msg = new Message();
             msg.setData(bundle);
-
-//            msg.what = KarteAnzeigen.TYP_EIGENE_POSITION;
-
             mKarteAnzeigenCallbackHandler.sendMessage(msg);
         }
     }
@@ -68,10 +61,10 @@ public class GeoPositionsService extends Service implements LocationListener, Co
     @Override
     public void onCreate() {
         boolean usePlayService = isGooglePlayServiceAvailable();
+
         if (usePlayService) {
             starteGeoProvider();
         }
-
         if (mLocationClient != null){
             mLocationClient.connect();
         }
@@ -107,9 +100,7 @@ public class GeoPositionsService extends Service implements LocationListener, Co
 
     @Override
     public void onDisconnected() {
-
     }
-
 
     private boolean isGooglePlayServiceAvailable() {
         int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
@@ -118,7 +109,6 @@ public class GeoPositionsService extends Service implements LocationListener, Co
 
     private void starteGeoProvider(){
         mLocationClient = new LocationClient(this, this, this);
-
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
@@ -127,11 +117,9 @@ public class GeoPositionsService extends Service implements LocationListener, Co
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
     }
 
     public class GeoPositionsServiceBinder extends Binder{
-
         public GpsData getGpsData(){
             return mGpsData;
         }
