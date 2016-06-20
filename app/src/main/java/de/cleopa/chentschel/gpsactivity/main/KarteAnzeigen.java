@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import de.cleopa.chentschel.gpsactivity.R;
-import de.cleopa.chentschel.gpsactivity.androidgpx.data.GPXDocument;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService.GeoPositionsServiceBinder;
 
@@ -43,14 +42,15 @@ public class KarteAnzeigen extends Activity{
     private Marker mMeinMarker;
     private MapView mMapView;
     private GoogleMap mMap;
-    public static final String IN_PARAM_GEO_POSITION = "location";
+//    public static final String IN_PARAM_GEO_POSITION = "location";
 //    public static final int TYP_EIGENE_POSITION = 1;
-    public static boolean mPositionNachverfolgen;
+//    public static boolean mPositionNachverfolgen;
     private static Handler mKarteAnzeigenCallbackHandler;
     private Polyline mVerbindungslinie;
     LatLng latLngA;
     LatLng latLng;
-    public static GPXDocument mDocument = null;
+
+//    public static GPXDocument mDocument = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,17 +153,32 @@ public class KarteAnzeigen extends Activity{
     public void handleMessage(Message msg) {
         final Bundle bundle = msg.getData();
         final Location location = (Location) bundle.get("location");
-        final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        if (location != null) {
+            latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        } else {
+            Log.d(TAG, "---> Location ist NULL <---");
+        }
+
+
+        if (latLngA==null){
+            latLngA=latLng;
+        }
         final MarkerOptions markerOption = new MarkerOptions();
         markerOption.position(latLng);
         markerOption.title(getAddressFromLatLng(latLng));
         mMeinMarker = mMap.addMarker(markerOption);
+        //mVerbindungslinie=mMap.addPolyline(new PolylineOptions().add(latLng, new LatLng(location.getLatitude(), location.getLongitude())).width(5).color(Color.BLUE));
+
+        mVerbindungslinie=mMap.addPolyline(new PolylineOptions().add(latLngA, latLng).width(5).color(Color.BLUE));
+        Log.d(TAG,"latlng  : "+latLng);
+        Log.d(TAG,"latlngA: "+latLngA);
+
         mMeinMarker.showInfoWindow();
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
-//            latLngA = new LatLng(location.getLatitude(), location.getLongitude());
+        latLngA=latLng;
 
-//            mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLng, new LatLng(location.getLatitude(), location.getLongitude())).width(5).color(Color.BLUE));
+
 
 //            markerOption.position(latLng);
 //            markerOption.title(getAddressFromLatLng(latLng));
@@ -199,7 +214,7 @@ public class KarteAnzeigen extends Activity{
         private WeakReference<KarteAnzeigen> mActivity;
 
         KarteAnzeigenCallbackHandler(KarteAnzeigen acticity){
-            mActivity = new WeakReference<KarteAnzeigen>(acticity);
+            mActivity = new WeakReference<>(acticity);
         }
 
         @Override

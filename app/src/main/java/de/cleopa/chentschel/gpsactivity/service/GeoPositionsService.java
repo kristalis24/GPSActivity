@@ -1,9 +1,6 @@
 package de.cleopa.chentschel.gpsactivity.service;
 
-import android.app.AlertDialog;
 import android.app.Service;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Binder;
@@ -11,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
@@ -23,9 +19,7 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 
-import de.cleopa.chentschel.gpsactivity.main.GPSTracker;
 import de.cleopa.chentschel.gpsactivity.main.GpsData;
-import de.cleopa.chentschel.gpsactivity.main.KarteAnzeigen;
 
 
 public class GeoPositionsService extends Service implements LocationListener, ConnectionCallbacks, OnConnectionFailedListener {
@@ -120,14 +114,14 @@ public class GeoPositionsService extends Service implements LocationListener, Co
     }
 
     public class GeoPositionsServiceBinder extends Binder{
-        public GpsData getGpsData(){
-            return mGpsData;
-        }
+//        public GpsData getGpsData(){
+//            return mGpsData;
+//        }
 
         public void setzeActivityCallbackHandler(final Handler callback){
             mKarteAnzeigenCallbackHandler = callback;
         }
 
-        public void restarteGeoProvider(){starteGeoProvider();}
+//        public void restarteGeoProvider(){starteGeoProvider();}
     }
 }
