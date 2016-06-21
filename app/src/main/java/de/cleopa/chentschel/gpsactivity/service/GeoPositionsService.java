@@ -18,8 +18,11 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
 
 import de.cleopa.chentschel.gpsactivity.main.GpsData;
+import de.cleopa.chentschel.gpsactivity.main.KarteAnzeigen;
 
 
 public class GeoPositionsService extends Service implements LocationListener, ConnectionCallbacks, OnConnectionFailedListener {
@@ -29,6 +32,7 @@ public class GeoPositionsService extends Service implements LocationListener, Co
     private Handler mKarteAnzeigenCallbackHandler;
     private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
+
     private static final long UPDATE_INTERVAL = 15000;
     private static final long SCHNELLSTES_INTERVAL = 5000;
 
@@ -38,16 +42,22 @@ public class GeoPositionsService extends Service implements LocationListener, Co
      *
      * @param location = GPS-Koordinaten (double Breitengrad, double Längengrad)
      */
+
     @Override
     public void onLocationChanged(Location location) {
         if (location != null){
             mGpsData = new GpsData(location);
         }
+
         if (mKarteAnzeigenCallbackHandler != null){
             final Bundle bundle = new Bundle();
-            bundle.putParcelable("location", location);
+            bundle.putParcelable(KarteAnzeigen.IN_PARAM_GEO_POSITION, location);
+
             final Message msg = new Message();
             msg.setData(bundle);
+
+            msg.what = KarteAnzeigen.TYP_EIGENE_POSITION;
+
             mKarteAnzeigenCallbackHandler.sendMessage(msg);
         }
     }
@@ -55,10 +65,10 @@ public class GeoPositionsService extends Service implements LocationListener, Co
     @Override
     public void onCreate() {
         boolean usePlayService = isGooglePlayServiceAvailable();
-
         if (usePlayService) {
             starteGeoProvider();
         }
+
         if (mLocationClient != null){
             mLocationClient.connect();
         }
@@ -93,7 +103,13 @@ public class GeoPositionsService extends Service implements LocationListener, Co
     }
 
     @Override
-    public void onDisconnected() {
+    public void onDisconnected(){
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 
     private boolean isGooglePlayServiceAvailable() {
@@ -103,25 +119,23 @@ public class GeoPositionsService extends Service implements LocationListener, Co
 
     private void starteGeoProvider(){
         mLocationClient = new LocationClient(this, this, this);
+
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         mLocationRequest.setFastestInterval(SCHNELLSTES_INTERVAL);
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-    }
-
     public class GeoPositionsServiceBinder extends Binder{
-//        public GpsData getGpsData(){
-//            return mGpsData;
-//        }
+
+        public GpsData getGpsData(){
+            return mGpsData;
+        }
 
         public void setzeActivityCallbackHandler(final Handler callback){
             mKarteAnzeigenCallbackHandler = callback;
         }
 
-//        public void restarteGeoProvider(){starteGeoProvider();}
+        public void restarteGeoProvider(){starteGeoProvider();}
     }
 }
