@@ -3,7 +3,10 @@ package de.cleopa.chentschel.gpsactivity.main;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+
+import java.io.File;
 
 import de.cleopa.chentschel.gpsactivity.R;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
@@ -12,6 +15,7 @@ public class GPSActivity extends Activity{//implements GpxParser.GpxParserListen
 
 //    private ProgressDialog mProgressDialog = null;
 //    private Context mContext;
+    private static final String TAG =KarteAnzeigen.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +24,12 @@ public class GPSActivity extends Activity{//implements GpxParser.GpxParserListen
         setContentView(R.layout.gpsactivity);
         setTitle(R.string.title_activity_gps);
 //        showSettingsAlert();
+//        File extAnwVerzeichnis = getExternalFilesDir(null);
+//        File akte = new File(extAnwVerzeichnis, "gps.txt");
+//        if (akte.exists()){
+//            deleteFile(akte.toString());
+//            Log.d(TAG, "---> akte.toString(): " + akte.toString() + " <---");
+//        }
         startService(new Intent(this, GeoPositionsService.class));
     }
 

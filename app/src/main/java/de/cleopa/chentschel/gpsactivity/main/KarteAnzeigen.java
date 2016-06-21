@@ -27,6 +27,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
@@ -173,6 +176,14 @@ public class KarteAnzeigen extends Activity{
         Log.d(TAG,"latlng  : "+latLng);
         Log.d(TAG,"latlngA: "+latLngA);
 
+//        Dateiverwaltung file = new Dateiverwaltung();
+        demoExternesAnwendungsVerzeichnis("" + location.getTime());
+        demoExternesAnwendungsVerzeichnis("" + latLng);
+        demoExternesAnwendungsVerzeichnis("" + latLngA);
+//        schreibeDatei("" + location.getTime());
+//        schreibeDatei("" + latLng);
+//        schreibeDatei("" + latLngA);
+
         mMeinMarker.showInfoWindow();
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
@@ -223,6 +234,39 @@ public class KarteAnzeigen extends Activity{
             if (activity != null){
                 activity.handleMessage(msg);
             }
+        }
+    }
+
+    public void demoExternesAnwendungsVerzeichnis(String geoData){
+        try {
+            // Zugriff auf Anwendungsverzeichnis auf externen Speicher
+            File extAnwVerzeichnis = getExternalFilesDir(null);
+            if (extAnwVerzeichnis != null){
+                Log.i(TAG, "Externes Anwendungsverzeichnis: " + extAnwVerzeichnis.getPath());
+                File akte = new File(extAnwVerzeichnis, "gps.txt");
+                FileOutputStream out = new FileOutputStream(akte);
+                Log.d(TAG, "--->OUT: " + out.toString() + " <---");
+                Log.d(TAG, "--->AKTE: " + akte + " <---");
+                schreibeDatei(""+out, geoData);
+            }
+        } catch (IOException e){
+            Log.e(TAG, "Dateizugriff fehlerhaft.", e);
+        }
+    }
+
+    private void schreibeDatei(String out, String geoData) throws IOException{
+//        OutputStreamWriter wrt = new OutputStreamWriter(out);
+//        try{
+//            wrt.append(geoData + "\n");
+//        }finally {
+//            wrt.close();
+//        }
+
+        FileWriter file = new FileWriter(out, true);
+        try {
+            file.append(geoData);
+        }finally {
+            file.close();
         }
     }
 }
