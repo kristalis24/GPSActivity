@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
     tools:context="de.cleopa.chentschel.gpsactivity.main.GPSActivity">
 
-    <TextView
+<!--    <TextView
         android:id="@+id/app_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,7 +17,17 @@
         android:textSize="30sp"
         android:text="@string/title_activity_gps"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true" />-->
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimaryDark"
+        android:titleTextColor="@color/weiss"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <Button
         android:id="@+id/button_gps"
@@ -30,7 +40,7 @@
         android:textColor="@color/weiss"
         android:text="@string/btn_gps"
         android:onClick="onClickKarteAnzeigen"
-        android:layout_below="@+id/app_name"
+        android:layout_below="@+id/toolbar"
         android:layout_centerHorizontal="true" />
 
     <Button

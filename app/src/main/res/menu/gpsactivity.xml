@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/men_Beenden"
+        android:title="@string/men_beenden"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel" />
+    <item
+        android:id="@+id/men_deleteFile"
+        android:title="@string/men_deleteFile"
+        android:icon="@android:drawable/ic_delete" />
+</menu>

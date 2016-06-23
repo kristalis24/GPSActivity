@@ -18,8 +18,6 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Marker;
 
 import de.cleopa.chentschel.gpsactivity.main.GpsData;
 import de.cleopa.chentschel.gpsactivity.main.KarteAnzeigen;
@@ -128,14 +126,14 @@ public class GeoPositionsService extends Service implements LocationListener, Co
 
     public class GeoPositionsServiceBinder extends Binder{
 
-        public GpsData getGpsData(){
-            return mGpsData;
-        }
-
         public void setzeActivityCallbackHandler(final Handler callback){
             mKarteAnzeigenCallbackHandler = callback;
         }
 
-        public void restarteGeoProvider(){starteGeoProvider();}
+//        public GpsData getGpsData(){
+//            return mGpsData;
+//        }
+//
+//        public void restarteGeoProvider(){starteGeoProvider();}
     }
 }
