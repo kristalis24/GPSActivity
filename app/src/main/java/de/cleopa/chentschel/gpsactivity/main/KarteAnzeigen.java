@@ -1,46 +1,43 @@
 package de.cleopa.chentschel.gpsactivity.main;
 
-        import android.app.Activity;
-        import android.app.Dialog;
-        import android.content.ComponentName;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.content.ServiceConnection;
-        import android.graphics.Color;
-        import android.location.Geocoder;
-        import android.location.Location;
-        import android.os.Bundle;
-        import android.os.Handler;
-        import android.os.IBinder;
-        import android.os.Message;
-        import android.util.Log;
-        import android.view.Menu;
-        import android.view.MenuItem;
-        import android.widget.Toast;
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.graphics.Color;
+import android.location.Geocoder;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.util.Log;
 
-        import com.google.android.gms.common.ConnectionResult;
-        import com.google.android.gms.common.GooglePlayServicesUtil;
-        import com.google.android.gms.maps.CameraUpdateFactory;
-        import com.google.android.gms.maps.GoogleMap;
-        import com.google.android.gms.maps.MapView;
-        import com.google.android.gms.maps.MapsInitializer;
-        import com.google.android.gms.maps.model.LatLng;
-        import com.google.android.gms.maps.model.Marker;
-        import com.google.android.gms.maps.model.MarkerOptions;
-        import com.google.android.gms.maps.model.Polyline;
-        import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
-        import java.io.BufferedReader;
-        import java.io.File;
-        import java.io.FileInputStream;
-        import java.io.FileWriter;
-        import java.io.IOException;
-        import java.io.InputStreamReader;
-        import java.lang.ref.WeakReference;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 
-        import de.cleopa.chentschel.gpsactivity.R;
-        import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
-        import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService.GeoPositionsServiceBinder;
+import de.cleopa.chentschel.gpsactivity.R;
+import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
+import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService.GeoPositionsServiceBinder;
 
 public class KarteAnzeigen extends Activity{
 
@@ -65,13 +62,8 @@ public class KarteAnzeigen extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.karte_anzeigen);
-
-        if (mMeinePosition != null && mVerbindungslinie != null){
-            mVerbindungslinie.remove();
-        }
-        if (mMap != null && mMeinMarker != null){
-            mMeinMarker.remove();
-        }
+        if (mMeinePosition != null && mVerbindungslinie != null){mVerbindungslinie.remove();}
+        if (mMap != null && mMeinMarker != null){mMeinMarker.remove();}
 
         mKarteAnzeigenCallbackHandler = new KarteAnzeigenCallbackHandler(this);
         mMapView = (MapView) findViewById(R.id.karte_anzeigen);
@@ -80,26 +72,6 @@ public class KarteAnzeigen extends Activity{
 
         final Intent geoIntent = new Intent(this, GeoPositionsService.class);
         bindService(geoIntent, mGeoPositionsServiceConnection, Context.BIND_AUTO_CREATE);
-    }
-
-
-    @Override    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.karte_anzeigen, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Wir prüfen, ob Menü-Element mit der ID "action_daten_aktualisieren"
-        // ausgewählt wurde und geben eine Meldung aus
-        int id = item.getItemId();
-        if (id == R.id.men_Beenden) {
-            Toast.makeText(getParent(), "Sie haben Beenden gedrückt!", Toast.LENGTH_LONG).show();
-            onDestroy();
-            startActivity(new Intent(this, GPSActivity.class));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     protected void onDestroy(){
@@ -200,13 +172,8 @@ public class KarteAnzeigen extends Activity{
         Log.d(TAG,"latlng  : "+latLng);
         Log.d(TAG,"latlngA: "+latLngA);
 
-//        Dateiverwaltung file = new Dateiverwaltung();
-        demoExternesAnwendungsVerzeichnis("" + time);
+//        demoExternesAnwendungsVerzeichnis("" + time);
         demoExternesAnwendungsVerzeichnis("" + latLng);
-//        demoExternesAnwendungsVerzeichnis("" + latLngA);
-//        schreibeDatei("" + location.getTime());
-//        schreibeDatei("" + latLng);
-//        schreibeDatei("" + latLngA);
 
         mMeinMarker.showInfoWindow();
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -224,11 +191,9 @@ public class KarteAnzeigen extends Activity{
     private String getAddressFromLatLng(LatLng latLng){
         Geocoder geocoder = new Geocoder(getBaseContext());
         String address = "";
-
         try {
             address=geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1).get(0).getAddressLine(0);
-        }
-        catch (IOException e){
+        } catch (IOException e){
             e.printStackTrace();
         }
         return address;

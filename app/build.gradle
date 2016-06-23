@@ -1,3 +1,5 @@
+import com.android.builder.model.ProductFlavor
+
 apply plugin: 'com.android.application'
 
 android {
@@ -6,10 +8,10 @@ android {
 
     defaultConfig {
         applicationId "de.cleopa.chentschel.gpsactivity"
-        minSdkVersion 23
-        targetSdkVersion 23
-        versionCode="2"
-        versionName="2.21"
+        minSdkVersion 21
+        targetSdkVersion 22
+        versionCode= "2"
+        versionName= "2.22"
     }
     buildTypes {
         release {
