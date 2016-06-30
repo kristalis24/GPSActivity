@@ -153,39 +153,27 @@ public class KarteAnzeigen extends Activity{
     public void handleMessage(Message msg) {
         final Bundle bundle = msg.getData();
         final Location location = (Location) bundle.get("location");
+
         if (location != null) {
             latLng = new LatLng(location.getLatitude(), location.getLongitude());
             time = location.getTime();
-        } else {
-            Log.d(TAG, "---> Location ist NULL <---");
         }
         if (latLngA==null){
             latLngA=latLng;
         }
+
         final MarkerOptions markerOption = new MarkerOptions();
         markerOption.position(latLng);
         markerOption.title(getAddressFromLatLng(latLng));
         mMeinMarker = mMap.addMarker(markerOption);
-        //mVerbindungslinie=mMap.addPolyline(new PolylineOptions().add(latLng, new LatLng(location.getLatitude(), location.getLongitude())).width(5).color(Color.BLUE));
-
         mVerbindungslinie=mMap.addPolyline(new PolylineOptions().add(latLngA, latLng).width(5).color(Color.BLUE));
-        Log.d(TAG,"latlng  : "+latLng);
-        Log.d(TAG,"latlngA: "+latLngA);
-
-//        demoExternesAnwendungsVerzeichnis("" + time);
-        demoExternesAnwendungsVerzeichnis("" + latLng);
-
         mMeinMarker.showInfoWindow();
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
         latLngA=latLng;
-
-
-
-//            markerOption.position(latLng);
-//            markerOption.title(getAddressFromLatLng(latLng));
-//            Marker mMeinMarker2 = mMap.addMarker(markerOption);
-//            mMeinMarker2.showInfoWindow();
+        
+        Double d = Double.parseDouble(latLng.toString());
+        demoExternesAnwendungsVerzeichnis(latLng);
     }
 
     private String getAddressFromLatLng(LatLng latLng){
@@ -215,7 +203,7 @@ public class KarteAnzeigen extends Activity{
 
         KarteAnzeigenCallbackHandler(KarteAnzeigen acticity){
             mActivity = new WeakReference<>(acticity);
-        }
+        }lati.toString()
 
         @Override
         public void handleMessage(Message msg){
@@ -226,43 +214,54 @@ public class KarteAnzeigen extends Activity{
         }
     }
 
-    public void demoExternesAnwendungsVerzeichnis(String geoData){
+    public void demoExternesAnwendungsVerzeichnis(LatLng geoData){
         try {
             // Zugriff auf Anwendungsverzeichnis auf externen Speicher
             File extAnwVerzeichnis = getExternalFilesDir(null);
             if (extAnwVerzeichnis != null){
-                Log.i(TAG, "Externes Anwendungsverzeichnis: " + extAnwVerzeichnis.getPath());
                 File akte = new File(extAnwVerzeichnis, "gps.txt");
                 // Falls das File noch nicht existiert wird es mit createNewFile() erzeugt.
                 // Ansonsten wird createNewFile() ignoriert.
                 newFile = akte.createNewFile();
                 FileInputStream in = new FileInputStream(akte);
-                StringBuilder s = leseDatei(in, geoData);
-                Log.d(TAG, "\n ---> extAnwVerzeichnis.toString():\n" + (extAnwVerzeichnis.toString()) + "\n" + s);
-                schreibeDatei(akte.toString(), s);
+
+                StringBuilder s = leseDatei(in);
+//                String[] inhaltRead = s.toString().split(",");
+//                Double lati = Double.parseDouble(inhaltRead[0]);
+//                Double longi = Double.parseDouble(inhaltRead[1]);
+
+                String[] inhaltAdd = geoData.toString().split(",");
+                Double latitude = Double.parseDouble(inhaltAdd[0]);
+                Double longitude = Double.parseDouble(inhaltAdd[1]);
+                s.append(""+latitude);
+                s.append(""+longitude);
+                schreibeDatei(akte.toString(), s.toString());
             }
         } catch (IOException e){
             Log.e(TAG, "Dateizugriff fehlerhaft.", e);
         }
     }
 
-    private void schreibeDatei(String out, StringBuilder geoData) throws IOException{
+    private void schreibeDatei(String out, String in) throws IOException{
         try (FileWriter file = new FileWriter(out)) {
-            file.write(geoData.toString());
+            file.write(in);
+        }catch (IOException e){
+            Log.e(TAG, "Dateizugriff fehlerhaft.", e);
         }
     }
 
-    private StringBuilder leseDatei(FileInputStream inStream, String geoData) throws IOException{
+    private StringBuilder leseDatei(FileInputStream inStream) throws IOException{
         StringBuilder inhalt = new StringBuilder();
         try (BufferedReader in = new BufferedReader(new InputStreamReader(inStream))) {
             String zeile;
             while ((zeile = in.readLine()) != null) {
                 inhalt.append(zeile);
-                inhalt.append("\n");
+                //inhalt.append("\n");
             }
-        } finally {
-            inhalt.append(geoData);
         }
+//        finally {
+//            inhalt.append(geoData);
+//        }
         return inhalt;
     }
 }

@@ -115,7 +115,7 @@ public class GeoPositionsService extends Service implements LocationListener, Co
         return errorCode == ConnectionResult.SUCCESS;
     }
 
-    private void starteGeoProvider(){
+    public void starteGeoProvider(){
         mLocationClient = new LocationClient(this, this, this);
 
         mLocationRequest = LocationRequest.create();
@@ -128,12 +128,14 @@ public class GeoPositionsService extends Service implements LocationListener, Co
 
         public void setzeActivityCallbackHandler(final Handler callback){
             mKarteAnzeigenCallbackHandler = callback;
-        }
+     //   }
 
 //        public GpsData getGpsData(){
 //            return mGpsData;
 //        }
 //
-//        public void restarteGeoProvider(){starteGeoProvider();}
+   //     public void restarteGeoProvider(){
+//            starteGeoProvider();
+       }
     }
 }

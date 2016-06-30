@@ -45,8 +45,8 @@
 
         <activity android:name="de.cleopa.chentschel.gpsactivity.main.KarteAnzeigen"
                   android:label="@string/title_activity_gps"/>
-        <activity android:name=".main.Dateiverwaltung"
-                  android:label="Dateiverwaltung"/>
+        <activity android:name="de.cleopa.chentschel.gpsactivity.main.KarteAnzeigenSaved"
+                  android:label="KarteAnzeigenSaved"/>
 
         <service android:name="de.cleopa.chentschel.gpsactivity.service.GeoPositionsService" />
 

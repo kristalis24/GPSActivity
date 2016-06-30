@@ -54,6 +54,7 @@
         android:layout_marginRight="20dp"
         android:backgroundTint="@color/colorPrimaryDark"
         android:text="@string/btn_gps_last"
-        android:textColor="@color/weiss"/>
+        android:textColor="@color/weiss"
+        android:onClick="onClickKarteAnzeigenSaved"/>
 
 </RelativeLayout>

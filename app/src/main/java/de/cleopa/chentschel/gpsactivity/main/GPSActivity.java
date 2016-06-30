@@ -37,7 +37,14 @@ public class GPSActivity extends AppCompatActivity{//implements GpxParser.GpxPar
     }
 
     public void onClickKarteAnzeigen(final View sfNormal){
+//        startService(new Intent(this, GeoPositionsService.class));
         final Intent intent = new Intent(this, KarteAnzeigen.class);
+        startActivity(intent);
+    }
+
+    public void onClickKarteAnzeigenSaved(final View sfNormal){
+//        startService(new Intent(this, GeoPositionsService.class));
+        final Intent intent = new Intent(this, KarteAnzeigenSaved.class);
         startActivity(intent);
     }
 
@@ -52,6 +59,7 @@ public class GPSActivity extends AppCompatActivity{//implements GpxParser.GpxPar
         // ausgewählt wurde und geben eine Meldung aus
         switch (item.getItemId()) {
             case R.id.men_Beenden:
+                Toast.makeText(getBaseContext(), "GPSActivity wird beendet!", Toast.LENGTH_LONG).show();
                 finish();
                 return true;
             case R.id.men_deleteFile:
