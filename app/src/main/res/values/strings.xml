@@ -5,7 +5,8 @@
     <string name="btn_gps">RECORD YOUR TRACK</string>
     <string name="btn_gps_last">VIEW YOUR LAST TRACKS</string>
     <string name="position_ich">Hier bin Ich!</string>
-    <string name="api_key_v2">AIzaSyC_9Bobhj91oFYxVlck6Xjf23n-jP72wvc</string>
+    <string name="api_key_v2">AIzaSyA9f7sxSPYRKL5kRj5yqhVCq0tOUdX_hHk</string>
+    <!--<string name="api_key_v2">AIzaSyC_9Bobhj91oFYxVlck6Xjf23n-jP72wvc</string>-->
     <string name="men_beenden">Beenden</string>
     <string name="men_deleteFile">Alte Strecke löschen</string>
 </resources>
