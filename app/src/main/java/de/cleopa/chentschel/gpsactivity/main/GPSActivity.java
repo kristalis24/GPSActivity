@@ -1,6 +1,7 @@
 package de.cleopa.chentschel.gpsactivity.main;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +17,8 @@ import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
 
 public class GPSActivity extends AppCompatActivity{//implements GpxParser.GpxParserListener, GpxParserHandler.GpxParserProgressListener{
 
+    public Location location = new Location("location");
+    private GpsData gpsData = new GpsData(location);
 //    private ProgressDialog mProgressDialog = null;
 //    private static final String TAG =KarteAnzeigen.class.getSimpleName();
 
@@ -28,6 +31,7 @@ public class GPSActivity extends AppCompatActivity{//implements GpxParser.GpxPar
         setSupportActionBar(toolbar);
 //        showSettingsAlert();
         startService(new Intent(this, GeoPositionsService.class));
+//        Toast.makeText(this, (gpsData.toString()), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -37,7 +41,14 @@ public class GPSActivity extends AppCompatActivity{//implements GpxParser.GpxPar
     }
 
     public void onClickKarteAnzeigen(final View sfNormal){
+//        startService(new Intent(this, GeoPositionsService.class));
         final Intent intent = new Intent(this, KarteAnzeigen.class);
+        startActivity(intent);
+    }
+
+    public void onClickKarteAnzeigenSaved(final View sfNormal){
+//        stopService(new Intent(this, GeoPositionsService.class));
+        final Intent intent = new Intent(this, KarteAnzeigenSaved.class);
         startActivity(intent);
     }
 
@@ -52,6 +63,7 @@ public class GPSActivity extends AppCompatActivity{//implements GpxParser.GpxPar
         // ausgewählt wurde und geben eine Meldung aus
         switch (item.getItemId()) {
             case R.id.men_Beenden:
+                Toast.makeText(getBaseContext(), "GPSActivity wird beendet!", Toast.LENGTH_LONG).show();
                 finish();
                 return true;
             case R.id.men_deleteFile:

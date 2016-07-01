@@ -34,14 +34,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.cleopa.chentschel.gpsactivity.R;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService.GeoPositionsServiceBinder;
 
-public class KarteAnzeigen extends Activity{
+public class KarteAnzeigenSaved extends Activity {
 
-    private static final String TAG =KarteAnzeigen.class.getSimpleName();
+    private static final String TAG = KarteAnzeigenSaved.class.getSimpleName();
     private static final float DEFAULT_ZOOM_LEVEL = 17.5f;
     public static Location mMeinePosition;
     private Marker mMeinMarker;
@@ -54,20 +56,27 @@ public class KarteAnzeigen extends Activity{
     LatLng latLngA;
     LatLng latLng;
     long time;
-    boolean newFile;
-    Double breite;
-    Double länge;
+    boolean newFile = true;
+    StringBuilder s = null;
+    ArrayList<LatLng> list = new ArrayList<LatLng>();
+    double latitude;
+    double longitude;
+
 //    public static GPXDocument mDocument = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.karte_anzeigen);
-        if (mMeinePosition != null && mVerbindungslinie != null){mVerbindungslinie.remove();}
-        if (mMap != null && mMeinMarker != null){mMeinMarker.remove();}
+        setContentView(R.layout.karte_anzeigen_saved);
+        if (mMeinePosition != null && mVerbindungslinie != null) {
+            mVerbindungslinie.remove();
+        }
+        if (mMap != null && mMeinMarker != null) {
+            mMeinMarker.remove();
+        }
 
         mKarteAnzeigenCallbackHandler = new KarteAnzeigenCallbackHandler(this);
-        mMapView = (MapView) findViewById(R.id.karte_anzeigen);
+        mMapView = (MapView) findViewById(R.id.karte_anzeigen_saved);
         mMapView.onCreate(savedInstanceState);
         initMapView();
 
@@ -75,7 +84,7 @@ public class KarteAnzeigen extends Activity{
         bindService(geoIntent, mGeoPositionsServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    protected void onDestroy(){
+    protected void onDestroy() {
         mMapView.onDestroy();
         mKarteAnzeigenCallbackHandler.removeCallbacksAndMessages(null);
         unbindService(mGeoPositionsServiceConnection);
@@ -84,13 +93,14 @@ public class KarteAnzeigen extends Activity{
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
     }
 
     @Override
-    protected void onResume(){
-        if (mMapView != null){
+    protected void onResume() {
+//        stopService(new Intent(this, GeoPositionsService.class));
+        if (mMapView != null) {
             // null, wenn Google Play Store nicht installiert ist
             mMapView.onResume();
         }
@@ -98,33 +108,33 @@ public class KarteAnzeigen extends Activity{
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         mMapView.onPause();
         super.onPause();
     }
 
     @Override
-    public void onLowMemory(){
+    public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState){
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mMapView.onSaveInstanceState(outState);
     }
 
-    private void initMapView(){
+    private void initMapView() {
         boolean usePlayService = isGooglePlayServiceAvailable();
 
-        if (usePlayService){
+        if (usePlayService) {
             MapsInitializer.initialize(this);
 
-            if (mMap == null){
+            if (mMap == null) {
                 mMap = mMapView.getMap();
 
-                if (mMap != null){
+                if (mMap != null) {
                     mMap.getUiSettings().setZoomControlsEnabled(true);
                     mMap.getUiSettings().setCompassEnabled(true);
                     mMap.setMyLocationEnabled(true);
@@ -139,11 +149,11 @@ public class KarteAnzeigen extends Activity{
         }
     }
 
-    private boolean isGooglePlayServiceAvailable(){
+    private boolean isGooglePlayServiceAvailable() {
         int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (errorCode != ConnectionResult.SUCCESS){
+        if (errorCode != ConnectionResult.SUCCESS) {
             Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(errorCode, this, -1);
-            if (errorDialog != null){
+            if (errorDialog != null) {
                 errorDialog.show();
                 return false;
             }
@@ -151,30 +161,43 @@ public class KarteAnzeigen extends Activity{
         return true;
     }
 
-    public void handleMessage(Message msg) {
+    public void handleMessage(Message msg) throws IOException {
         final Bundle bundle = msg.getData();
         final Location location = (Location) bundle.get("location");
 
-        if (location != null) {
-            breite = location.getLatitude();
-            länge = location.getLongitude();
-            latLng = new LatLng(breite, länge);
-        } if (latLngA==null){
-            latLngA=latLng;
-        }
+        File extAnwVerzeichnis = getExternalFilesDir(null);
+        File file = new File(extAnwVerzeichnis, "gps.txt");
+        FileInputStream inStream = new FileInputStream(file);
 
-        final MarkerOptions markerOption = new MarkerOptions();
-        markerOption.position(latLng);
-        markerOption.title(getAddressFromLatLng(latLng));
-        mMeinMarker = mMap.addMarker(markerOption);
-        mVerbindungslinie=mMap.addPolyline(new PolylineOptions().add(latLngA, latLng).width(5).color(Color.BLUE));
-        mMeinMarker.showInfoWindow();
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(inStream))) {
 
-        latLngA=latLng;
-        
-        //demoExternesAnwendungsVerzeichnis("" + time);
-        demoExternesAnwendungsVerzeichnis(breite + "," + länge);
+            String zeile;
+            while ((zeile = in.readLine()) != null) {
+                String[] inhalt = zeile.split(",");
+                latitude = Double.parseDouble(inhalt[0]);
+                longitude = Double.parseDouble(inhalt[1]);
+
+                if (location != null) {
+                    latLng = new LatLng(latitude, longitude);
+//                    list.add(new LatLng(latitude, longitude));
+                }
+
+                if (latLngA == null) {
+                    latLngA = latLng;
+                }
+
+                final MarkerOptions markerOption = new MarkerOptions();
+                markerOption.position(latLng);
+                markerOption.title(getAddressFromLatLng(latLng));
+                mMeinMarker = mMap.addMarker(markerOption);
+                mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLngA, latLng).width(5).color(Color.BLUE));
+                mMeinMarker.showInfoWindow();
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+                latLngA = latLng;
+
+            }
+        }// finally { inStream.close(); }
     }
 
     private String getAddressFromLatLng(LatLng latLng){
@@ -199,62 +222,24 @@ public class KarteAnzeigen extends Activity{
         }
     };
 
-    public void demoExternesAnwendungsVerzeichnis(String geoData){
-        try {
-            // Zugriff auf Anwendungsverzeichnis auf externen Speicher
-            File extAnwVerzeichnis = getExternalFilesDir(null);
-            if (extAnwVerzeichnis != null){
-                File akte = new File(extAnwVerzeichnis, "gps.txt");
-                // Falls das File noch nicht existiert wird es mit createNewFile() erzeugt.
-                // Ansonsten wird createNewFile() ignoriert.
-                newFile = akte.createNewFile();
-                FileInputStream in = new FileInputStream(akte);
-                StringBuilder s = leseDatei(in, geoData);
-
-                schreibeDatei(akte.toString(), s);
-            }
-        } catch (IOException e){
-            Log.e(TAG, "Dateizugriff fehlerhaft.", e);
-        }
-    }
-
-    private void schreibeDatei(String out, StringBuilder geoData) throws IOException{
-        try (FileWriter file = new FileWriter(out)) {
-            file.write(geoData.toString());
-            file.append("\n");
-        }catch (IOException e){
-            Log.e(TAG, "Dateizugriff fehlerhaft.", e);
-        }
-    }
-
-    private StringBuilder leseDatei(FileInputStream inStream, String geoData) throws IOException{
-        StringBuilder inhalt = new StringBuilder();
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(inStream))) {
-            String zeile;
-            while ((zeile = in.readLine()) != null) {
-                inhalt.append(zeile);
-                inhalt.append("\n");
-            }
-        } finally {
-            inhalt.append(geoData);
-        }
-        return inhalt;
-    }
-
-
 
     static class KarteAnzeigenCallbackHandler extends Handler{
-        private WeakReference<KarteAnzeigen> mActivity;
 
-        KarteAnzeigenCallbackHandler(KarteAnzeigen acticity){
+        private WeakReference<KarteAnzeigenSaved> mActivity;
+
+        KarteAnzeigenCallbackHandler(KarteAnzeigenSaved acticity){
             mActivity = new WeakReference<>(acticity);
         }
 
         @Override
         public void handleMessage(Message msg){
-            KarteAnzeigen activity = mActivity.get();
+            KarteAnzeigenSaved activity = mActivity.get();
+
             if (activity != null){
-                activity.handleMessage(msg);
+                try {activity.handleMessage(msg);
+                } catch (IOException e){
+                    Log.e(TAG, "Dateizugriff fehlerhaft.", e);
+                }
             }
         }
     }

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -25,14 +26,15 @@ import de.cleopa.chentschel.gpsactivity.main.KarteAnzeigen;
 
 public class GeoPositionsService extends Service implements LocationListener, ConnectionCallbacks, OnConnectionFailedListener {
 
-    private GpsData mGpsData;
+    public static final String TAG = GeoPositionsService.class.getSimpleName();
+    public GpsData mGpsData;
     private final IBinder mGpsBinder = new GeoPositionsServiceBinder();
     private Handler mKarteAnzeigenCallbackHandler;
     private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
-
-    private static final long UPDATE_INTERVAL = 15000;
-    private static final long SCHNELLSTES_INTERVAL = 5000;
+//    private static final float minDistance = 5f;
+//    private static final long UPDATE_INTERVAL = 5000;
+//    private static final long SCHNELLSTES_INTERVAL = 5000;
 
     /**
      * onLocationChanged(): Update der GPS-Koordinaten alle 5sek. beim SCHNELLSTES_INTERVAL
@@ -50,12 +52,9 @@ public class GeoPositionsService extends Service implements LocationListener, Co
         if (mKarteAnzeigenCallbackHandler != null){
             final Bundle bundle = new Bundle();
             bundle.putParcelable(KarteAnzeigen.IN_PARAM_GEO_POSITION, location);
-
             final Message msg = new Message();
             msg.setData(bundle);
-
             msg.what = KarteAnzeigen.TYP_EIGENE_POSITION;
-
             mKarteAnzeigenCallbackHandler.sendMessage(msg);
         }
     }
@@ -98,6 +97,8 @@ public class GeoPositionsService extends Service implements LocationListener, Co
         mGpsData = new GpsData(location);
         mLocationClient.requestLocationUpdates(mLocationRequest, this);
         Toast.makeText(this, (mGpsData.toString()), Toast.LENGTH_LONG).show();
+
+        Log.d(TAG, "---> mGpsData received: " + mGpsData.toString());
     }
 
     @Override
@@ -115,25 +116,22 @@ public class GeoPositionsService extends Service implements LocationListener, Co
         return errorCode == ConnectionResult.SUCCESS;
     }
 
-    private void starteGeoProvider(){
+    public void starteGeoProvider(){
         mLocationClient = new LocationClient(this, this, this);
-
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(SCHNELLSTES_INTERVAL);
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setSmallestDisplacement(5f);
     }
+
+
 
     public class GeoPositionsServiceBinder extends Binder{
 
         public void setzeActivityCallbackHandler(final Handler callback){
             mKarteAnzeigenCallbackHandler = callback;
-        }
-
-//        public GpsData getGpsData(){
-//            return mGpsData;
-//        }
-//
-//        public void restarteGeoProvider(){starteGeoProvider();}
+            starteGeoProvider();
+       }
     }
 }
