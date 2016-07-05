@@ -165,17 +165,20 @@ public class KarteAnzeigenSaved extends Activity {
         final Bundle bundle = msg.getData();
         final Location location = (Location) bundle.get("location");
 
-        File extAnwVerzeichnis = getExternalFilesDir(null);
-        File file = new File(extAnwVerzeichnis, "gps.txt");
-        FileInputStream inStream = new FileInputStream(file);
+//        File extAnwVerzeichnis = getExternalFilesDir(null);
+        final String file = new File(getExternalFilesDir(null), "gps.txt").toString();
 
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(inStream))) {
+        FileInputStream openFileInput = new FileInputStream(file);
+
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(openFileInput))) {
 
             String zeile;
             while ((zeile = in.readLine()) != null) {
-                String[] inhalt = zeile.split(",");
-                latitude = Double.parseDouble(inhalt[0]);
-                longitude = Double.parseDouble(inhalt[1]);
+                String inhalt[] = zeile.split(",");
+                time = Long.parseLong(inhalt[0]);
+//                inhalt[0]=null;
+                latitude = Double.parseDouble(inhalt[1]);
+                longitude = Double.parseDouble(inhalt[2]);
 
                 if (location != null) {
                     latLng = new LatLng(latitude, longitude);
