@@ -55,13 +55,13 @@ public class KarteAnzeigenSaved extends Activity {
     private Polyline mVerbindungslinie;
     LatLng latLngA;
     LatLng latLng;
-    long time;
     boolean newFile = true;
     StringBuilder s = null;
     ArrayList<LatLng> list = new ArrayList<LatLng>();
     double latitude;
     double longitude;
-
+    double höhe;
+    long time;
 //    public static GPXDocument mDocument = null;
 
     @Override
@@ -176,9 +176,9 @@ public class KarteAnzeigenSaved extends Activity {
             while ((zeile = in.readLine()) != null) {
                 String inhalt[] = zeile.split(",");
                 time = Long.parseLong(inhalt[0]);
-//                inhalt[0]=null;
-                latitude = Double.parseDouble(inhalt[1]);
-                longitude = Double.parseDouble(inhalt[2]);
+                höhe = Double.parseDouble(inhalt[1]);
+                latitude = Double.parseDouble(inhalt[2]);
+                longitude = Double.parseDouble(inhalt[3]);
 
                 if (location != null) {
                     latLng = new LatLng(latitude, longitude);

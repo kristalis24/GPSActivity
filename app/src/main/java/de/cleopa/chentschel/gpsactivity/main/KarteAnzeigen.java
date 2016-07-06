@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -57,6 +58,7 @@ public class KarteAnzeigen extends Activity{
     boolean newFile;
     Double breite;
     Double länge;
+    double höhe;
 //    public static GPXDocument mDocument = null;
 
     @Override
@@ -156,12 +158,14 @@ public class KarteAnzeigen extends Activity{
         final Location location = (Location) bundle.get("location");
 
         if (location != null) {
-            breite = location.getLatitude();
-            länge = location.getLongitude();
+        breite = location.getLatitude();
+        länge = location.getLongitude();
+        time = location.getTime();
+        höhe = location.getAltitude();
+
             latLng = new LatLng(breite, länge);
-        } if (latLngA==null){
-            latLngA=latLng;
         }
+        if (latLngA==null){latLngA=latLng;}
 
         final MarkerOptions markerOption = new MarkerOptions();
         markerOption.position(latLng);
@@ -173,8 +177,8 @@ public class KarteAnzeigen extends Activity{
 
         latLngA=latLng;
         
-        //demoExternesAnwendungsVerzeichnis("" + time);
-        demoExternesAnwendungsVerzeichnis(breite + "," + länge);
+        demoExternesAnwendungsVerzeichnis(time,höhe,breite,länge);
+//        demoExternesAnwendungsVerzeichnis(breite + "," + länge);
     }
 
     private String getAddressFromLatLng(LatLng latLng){
@@ -199,7 +203,8 @@ public class KarteAnzeigen extends Activity{
         }
     };
 
-    public void demoExternesAnwendungsVerzeichnis(String geoData){
+    public void demoExternesAnwendungsVerzeichnis(long time, double höhe, double lati, double loni){
+//        String geoData = time+","+höhe+","+lati+","+loni;
         try {
             // Zugriff auf Anwendungsverzeichnis auf externen Speicher
             File extAnwVerzeichnis = getExternalFilesDir(null);
@@ -209,19 +214,45 @@ public class KarteAnzeigen extends Activity{
                 // Ansonsten wird createNewFile() ignoriert.
                 newFile = akte.createNewFile();
                 FileInputStream in = new FileInputStream(akte);
-                StringBuilder s = leseDatei(in, geoData);
+                //StringBuilder s = leseDatei(in, geoData);
 
-                schreibeDatei(akte.toString(), s);
+                schreibeDatei(akte,time,höhe,lati,loni);
             }
         } catch (IOException e){
             Log.e(TAG, "Dateizugriff fehlerhaft.", e);
         }
     }
 
-    private void schreibeDatei(String out, StringBuilder geoData) throws IOException{
+    private void schreibeDatei(File out, long time, double höhe, double lati, double loni) throws IOException{
+        StringBuilder geoData = new StringBuilder("");
+        if (!(newFile = out.createNewFile())){
+            geoData.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            geoData.append("<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"EasyTrails\" version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">\n");
+//            schreibeDatei(out, header);
+        } else {
+
+            //makeFile(long time, double höhe, double lati, double loni);
+            geoData.append("<wpt lat=\"" + lati + "\" lon=\"" + loni + "\">");
+            geoData.append("<ele> =\"" + höhe + "\" </ele>");
+            geoData.append("<time> =\"" + time + "\" </time>");
+            geoData.append("<name><![CDATA[]]></name>");
+            geoData.append("<desc><![CDATA[]]></desc>");
+            geoData.append("<type><![CDATA[]]></type>");
+            geoData.append("</wpt>");
+        }
+
         try (FileWriter file = new FileWriter(out)) {
             file.write(geoData.toString());
             file.append("\n");
+        }catch (IOException e){
+            Log.e(TAG, "Dateizugriff fehlerhaft.", e);
+        }
+    }
+
+    private void schreibeDatei(File out, String header){
+        try (FileWriter file = new FileWriter(out)) {
+            file.write(header);
+//            file.append("\n");
         }catch (IOException e){
             Log.e(TAG, "Dateizugriff fehlerhaft.", e);
         }
