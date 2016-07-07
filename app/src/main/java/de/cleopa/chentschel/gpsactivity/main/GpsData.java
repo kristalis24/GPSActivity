@@ -2,6 +2,11 @@ package de.cleopa.chentschel.gpsactivity.main;
 
 import android.location.Location;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.TimeZone;
+
 
 public class GpsData {
 
@@ -38,7 +43,15 @@ public class GpsData {
     return "\nGpsData:\nBreitengrad=" + location.getLatitude()
         + "\nLaengengrad=" + location.getLongitude()
         + "\nHoehe=" + location.getAltitude()
-        + "\nZeitstempel=" + location.getTime()
+        + "\nZeitstempel=" + getZeit(location.getTime())
         + "\n";
+  }
+
+  public String getZeit(long time){
+//    TimeZone tz = TimeZone.getTimeZone("");
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.GERMANY); // Quoted "Z" to indicate UTC, no timezone offset
+//    df.setTimeZone(tz);
+//    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd'T'hh:mm:ss'Z'", Locale.GERMAN);
+    return df.format(time);
   }
 }

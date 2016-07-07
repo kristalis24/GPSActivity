@@ -97,7 +97,6 @@ public class GeoPositionsService extends Service implements LocationListener, Co
         mGpsData = new GpsData(location);
         mLocationClient.requestLocationUpdates(mLocationRequest, this);
         Toast.makeText(this, (mGpsData.toString()), Toast.LENGTH_LONG).show();
-
         Log.d(TAG, "---> mGpsData received: " + mGpsData.toString());
     }
 

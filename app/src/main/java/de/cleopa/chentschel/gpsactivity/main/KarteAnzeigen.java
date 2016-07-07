@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -35,6 +34,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import de.cleopa.chentschel.gpsactivity.R;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
@@ -59,12 +62,20 @@ public class KarteAnzeigen extends Activity{
     Double breite;
     Double länge;
     double höhe;
+//    StringBuilder geoData = new StringBuilder("");
 //    public static GPXDocument mDocument = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        File akte = new File(getExternalFilesDir(null),"gpx.txt");
+        if (akte.exists())
+        {
+            akte.delete();
+            Log.d(TAG, "---> FILE GELÖSCHT <---");
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.karte_anzeigen);
+
         if (mMeinePosition != null && mVerbindungslinie != null){mVerbindungslinie.remove();}
         if (mMap != null && mMeinMarker != null){mMeinMarker.remove();}
 
@@ -82,6 +93,9 @@ public class KarteAnzeigen extends Activity{
         mKarteAnzeigenCallbackHandler.removeCallbacksAndMessages(null);
         unbindService(mGeoPositionsServiceConnection);
         stopService(new Intent(this, GeoPositionsService.class));
+
+        try {schreibeDateiEnde();}
+        catch (IOException e){Log.d(TAG, "\nonServiceDisconnected(): DateiEnde konnte nicht geschrieben werden\n"+e);}
         super.onDestroy();
     }
 
@@ -132,7 +146,7 @@ public class KarteAnzeigen extends Activity{
                     mMap.setMyLocationEnabled(true);
                     mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                     mMap.setIndoorEnabled(true);
-                    mMap.setTrafficEnabled(true);
+                    //mMap.setTrafficEnabled(true);
                     mMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM_LEVEL));
                 }
             }
@@ -158,11 +172,10 @@ public class KarteAnzeigen extends Activity{
         final Location location = (Location) bundle.get("location");
 
         if (location != null) {
-        breite = location.getLatitude();
-        länge = location.getLongitude();
-        time = location.getTime();
-        höhe = location.getAltitude();
-
+            breite = location.getLatitude();
+            länge = location.getLongitude();
+            time = location.getTime();
+            höhe = location.getAltitude();
             latLng = new LatLng(breite, länge);
         }
         if (latLngA==null){latLngA=latLng;}
@@ -200,76 +213,76 @@ public class KarteAnzeigen extends Activity{
 
         @Override
         public void onServiceDisconnected(ComponentName className) {
+
         }
     };
 
     public void demoExternesAnwendungsVerzeichnis(long time, double höhe, double lati, double loni){
 //        String geoData = time+","+höhe+","+lati+","+loni;
-        try {
-            // Zugriff auf Anwendungsverzeichnis auf externen Speicher
-            File extAnwVerzeichnis = getExternalFilesDir(null);
-            if (extAnwVerzeichnis != null){
-                File akte = new File(extAnwVerzeichnis, "gps.txt");
-                // Falls das File noch nicht existiert wird es mit createNewFile() erzeugt.
-                // Ansonsten wird createNewFile() ignoriert.
-                newFile = akte.createNewFile();
-                FileInputStream in = new FileInputStream(akte);
-                //StringBuilder s = leseDatei(in, geoData);
-
+        try {File extAnwVerzeichnis = getExternalFilesDir(null);// Zugriff auf Anwendungsverzeichnis auf externen Speicher
+            if (extAnwVerzeichnis != null)
+            {File akte = new File(extAnwVerzeichnis, "gps.txt");
+//                FileInputStream in = new FileInputStream(akte);
+//                StringBuilder s = leseDatei(in, geoData);
+                //leseDatei(akte);
                 schreibeDatei(akte,time,höhe,lati,loni);
             }
-        } catch (IOException e){
-            Log.e(TAG, "Dateizugriff fehlerhaft.", e);
-        }
+        } catch (IOException e){Log.e(TAG, "Dateizugriff fehlerhaft.", e);}
     }
 
-    private void schreibeDatei(File out, long time, double höhe, double lati, double loni) throws IOException{
-        StringBuilder geoData = new StringBuilder("");
-        if (!(newFile = out.createNewFile())){
-            geoData.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-            geoData.append("<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"EasyTrails\" version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">\n");
-//            schreibeDatei(out, header);
+    private void schreibeDatei(File akte, long time, double höhe, double lati, double loni) throws IOException{
+        StringBuilder geoData = new StringBuilder();
+
+        if (akte.exists() == false) {
+            geoData = new StringBuilder("");
+            geoData.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            geoData.append("\n");
+            geoData.append("\n<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"GPXActivity\" version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">");
+            geoData.append("\n");
         } else {
-
-            //makeFile(long time, double höhe, double lati, double loni);
-            geoData.append("<wpt lat=\"" + lati + "\" lon=\"" + loni + "\">");
-            geoData.append("<ele> =\"" + höhe + "\" </ele>");
-            geoData.append("<time> =\"" + time + "\" </time>");
-            geoData.append("<name><![CDATA[]]></name>");
-            geoData.append("<desc><![CDATA[]]></desc>");
-            geoData.append("<type><![CDATA[]]></type>");
-            geoData.append("</wpt>");
+            geoData.append(leseDatei(akte).toString());
+            geoData.append("\n");
+            geoData.append("\n<wpt lat=\"" + lati + "\" lon=\"" + loni + "\">\n");
+            geoData.append("<ele>\"" + höhe + "\"</ele>\n");
+            geoData.append("<time>\"" + getZeit(time) + "\"</time>\n");
+            geoData.append("<name><![CDATA[]]></name>\n");
+            geoData.append("<desc><![CDATA[]]></desc>\n");
+            geoData.append("<type><![CDATA[]]></type>\n");
+            geoData.append("</wpt>\n");
         }
-
-        try (FileWriter file = new FileWriter(out)) {
-            file.write(geoData.toString());
-            file.append("\n");
-        }catch (IOException e){
-            Log.e(TAG, "Dateizugriff fehlerhaft.", e);
-        }
+        try (FileWriter file = new FileWriter(akte)) {file.write(geoData.toString());
+        } catch (IOException e) {Log.e(TAG, "Dateizugriff fehlerhaft.", e);}
     }
 
-    private void schreibeDatei(File out, String header){
-        try (FileWriter file = new FileWriter(out)) {
-            file.write(header);
-//            file.append("\n");
-        }catch (IOException e){
-            Log.e(TAG, "Dateizugriff fehlerhaft.", e);
-        }
+    private void schreibeDateiEnde() throws IOException{
+        File akte = new File(getExternalFilesDir(null), "gps.txt");
+        StringBuilder geoData = new StringBuilder(leseDatei(akte));
+        geoData.append("\n</gpx>");
+        try (FileWriter fileWriter = new FileWriter(akte)){fileWriter.write(geoData.toString());}
+        catch (IOException e){Log.e(TAG, "Dateizugriff fehlerhaft.", e);}
     }
 
-    private StringBuilder leseDatei(FileInputStream inStream, String geoData) throws IOException{
+    private StringBuilder leseDatei(File akte) throws IOException {
         StringBuilder inhalt = new StringBuilder();
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(inStream))) {
+        FileInputStream inStream = new FileInputStream(akte);
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(inStream)))
+        {
             String zeile;
-            while ((zeile = in.readLine()) != null) {
+
+            while ((zeile = in.readLine()) != null)
+            {
                 inhalt.append(zeile);
-                inhalt.append("\n");
             }
-        } finally {
-            inhalt.append(geoData);
         }
         return inhalt;
+    }
+
+    public String getZeit(long time){
+//        TimeZone tz = TimeZone.getTimeZone("Locale.GERMAN");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.GERMANY); // Quoted "Z" to indicate UTC, no timezone offset
+//        df.setTimeZone(tz);
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-ddZHH:mm:ssZ", Locale.GERMAN);
+        return df.format(time);
     }
 
 
@@ -284,9 +297,7 @@ public class KarteAnzeigen extends Activity{
         @Override
         public void handleMessage(Message msg){
             KarteAnzeigen activity = mActivity.get();
-            if (activity != null){
-                activity.handleMessage(msg);
-            }
+            if (activity != null){activity.handleMessage(msg);}
         }
     }
 }

@@ -5,6 +5,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +19,8 @@ import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
 public class GPSActivity extends AppCompatActivity{//implements GpxParser.GpxParserListener, GpxParserHandler.GpxParserProgressListener{
 
     public Location location = new Location("location");
-    private GpsData gpsData = new GpsData(location);
+    public GpsData gpsData = new GpsData(location);
+    boolean newFile;
 //    private ProgressDialog mProgressDialog = null;
 //    private static final String TAG =KarteAnzeigen.class.getSimpleName();
 
@@ -29,8 +31,8 @@ public class GPSActivity extends AppCompatActivity{//implements GpxParser.GpxPar
         setTitle(R.string.title_activity_gps);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        showSettingsAlert();
         startService(new Intent(this, GeoPositionsService.class));
+//        showSettingsAlert();
 //        Toast.makeText(this, (gpsData.toString()), Toast.LENGTH_LONG).show();
     }
 
