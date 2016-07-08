@@ -27,30 +27,21 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
 import de.cleopa.chentschel.gpsactivity.R;
-import de.cleopa.chentschel.gpsactivity.androidgpx.data.GPXBasePoint;
-import de.cleopa.chentschel.gpsactivity.androidgpx.data.GPXDocument;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService.GeoPositionsServiceBinder;
 
-public class KarteAnzeigenSaved extends Activity {
+public class KarteAnzeigenSaved_copy extends Activity {
 
-    private static final String TAG = KarteAnzeigenSaved.class.getSimpleName();
+    private static final String TAG = KarteAnzeigenSaved_copy.class.getSimpleName();
     private static final float DEFAULT_ZOOM_LEVEL = 17.5f;
     public static Location mMeinePosition;
     private Marker mMeinMarker;
@@ -168,37 +159,34 @@ public class KarteAnzeigenSaved extends Activity {
         return true;
     }
 
-    public void handleMessage(Message msg) throws IOException, XmlPullParserException {
+    public void handleMessage(Message msg) throws IOException {
         final Bundle bundle = msg.getData();
         final Location location = (Location) bundle.get("location");
 
+//        File extAnwVerzeichnis = getExternalFilesDir(null);
         final String file = new File(getExternalFilesDir(null), "gps.txt").toString();
 
         FileInputStream openFileInput = new FileInputStream(file);
 
         try (BufferedReader in = new BufferedReader(new InputStreamReader(openFileInput))) {
 
-//            String zeile;
-//            while ((zeile = in.readLine()) != null) {
-//                String inhalt[] = zeile.split(",");
-//                time = Long.parseLong(inhalt[0]);
-//                höhe = Double.parseDouble(inhalt[1]);
-//                latitude = Double.parseDouble(inhalt[2]);
-//                longitude = Double.parseDouble(inhalt[3]);
-
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            factory.setNamespaceAware(true);
-            XmlPullParser xpp = factory.newPullParser();
-            xpp.setInput(new FileReader(file));
-            processStartElement(xpp);
+            String zeile;
+            while ((zeile = in.readLine()) != null) {
+                String inhalt[] = zeile.split(",");
+                time = Long.parseLong(inhalt[0]);
+                höhe = Double.parseDouble(inhalt[1]);
+                latitude = Double.parseDouble(inhalt[2]);
+                longitude = Double.parseDouble(inhalt[3]);
 
                 if (location != null) {
                     latLng = new LatLng(latitude, longitude);
 //                    list.add(new LatLng(latitude, longitude));
                 }
+
                 if (latLngA == null) {
                     latLngA = latLng;
                 }
+
                 final MarkerOptions markerOption = new MarkerOptions();
                 markerOption.position(latLng);
                 markerOption.title(getAddressFromLatLng(latLng));
@@ -206,19 +194,11 @@ public class KarteAnzeigenSaved extends Activity {
                 mVerbindungslinie = mMap.addPolyline(new PolylineOptions().add(latLngA, latLng).width(5).color(Color.BLUE));
                 mMeinMarker.showInfoWindow();
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                latLngA = latLng;
-            }
-        }
-//    }
 
-    public void processStartElement (XmlPullParser xpp){
-        String name = xpp.getName();
-        String uri = xpp.getNamespace();
-        if ("".equals (uri)) {
-            Log.d(TAG, "--->\n\nStart element: " + name);
-        } else {
-            Log.d(TAG, "--->\n\nStart element: {" + uri + "}" + name);
-        }
+                latLngA = latLng;
+
+            }
+        }// finally { inStream.close(); }
     }
 
     private String getAddressFromLatLng(LatLng latLng){
@@ -246,19 +226,19 @@ public class KarteAnzeigenSaved extends Activity {
 
     static class KarteAnzeigenCallbackHandler extends Handler{
 
-        private WeakReference<KarteAnzeigenSaved> mActivity;
+        private WeakReference<KarteAnzeigenSaved_copy> mActivity;
 
-        KarteAnzeigenCallbackHandler(KarteAnzeigenSaved acticity){
+        KarteAnzeigenCallbackHandler(KarteAnzeigenSaved_copy acticity){
             mActivity = new WeakReference<>(acticity);
         }
 
         @Override
         public void handleMessage(Message msg){
-            KarteAnzeigenSaved activity = mActivity.get();
+            KarteAnzeigenSaved_copy activity = mActivity.get();
 
             if (activity != null){
                 try {activity.handleMessage(msg);
-                } catch (Exception e){
+                } catch (IOException e){
                     Log.e(TAG, "Dateizugriff fehlerhaft.", e);
                 }
             }
