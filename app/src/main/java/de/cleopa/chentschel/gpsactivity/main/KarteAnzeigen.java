@@ -57,7 +57,7 @@ public class KarteAnzeigen extends Activity{
     LatLng latLngA;
     LatLng latLng;
     long time;
-    boolean newFile;
+    boolean newFile = true;
     Double breite;
     Double länge;
     double höhe;
@@ -69,9 +69,9 @@ public class KarteAnzeigen extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.karte_anzeigen);
 
-        File akte = new File(getExternalFilesDir(null),"gpx.txt");
-        if (akte.exists()) {newFile = akte.delete();
-            Log.d(TAG, "---> FILE GELÖSCHT <---");}
+        File akte = getExternalFilesDir(null);
+        akte = new File(akte, "gpsactivity.gpx");
+        if (akte.delete()) {Log.d(TAG, "---> FILE GELÖSCHT <---");}
         if (mMeinePosition != null && mVerbindungslinie != null){mVerbindungslinie.remove();}
         if (mMap != null && mMeinMarker != null){mMeinMarker.remove();}
 
@@ -187,7 +187,6 @@ public class KarteAnzeigen extends Activity{
         latLngA=latLng;
         
         demoExternesAnwendungsVerzeichnis(time,höhe,breite,länge);
-//        demoExternesAnwendungsVerzeichnis(breite + "," + länge);
     }
 
     private String getAddressFromLatLng(LatLng latLng){
@@ -217,7 +216,7 @@ public class KarteAnzeigen extends Activity{
 //        String geoData = time+","+höhe+","+lati+","+loni;
         try {File extAnwVerzeichnis = getExternalFilesDir(null);// Zugriff auf Anwendungsverzeichnis auf externen Speicher
             if (extAnwVerzeichnis != null)
-            {File akte = new File(extAnwVerzeichnis, "gps.txt");
+            {File akte = new File(extAnwVerzeichnis, "gpsactivity.gpx");
 //                FileInputStream in = new FileInputStream(akte);
 //                StringBuilder s = leseDatei(in, geoData);
                 //leseDatei(akte);
@@ -229,7 +228,7 @@ public class KarteAnzeigen extends Activity{
     private void schreibeDatei(File akte, long time, double höhe, double lati, double loni) throws IOException{
         StringBuilder geoData = new StringBuilder();
 
-        if (akte.exists() == false) {
+        if (!akte.exists()) {
             geoData = new StringBuilder("");
             geoData.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             geoData.append("\n");

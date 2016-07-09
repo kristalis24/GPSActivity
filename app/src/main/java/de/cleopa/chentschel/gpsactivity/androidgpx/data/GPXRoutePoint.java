@@ -10,7 +10,7 @@ public class GPXRoutePoint extends GPXBasePoint {
 
 		public static final String TAG_RTEPT = "rtept";
 
-	};
+	}
 
 	public GPXRoutePoint(float lat, float lon) {
 		super(lat, lon);

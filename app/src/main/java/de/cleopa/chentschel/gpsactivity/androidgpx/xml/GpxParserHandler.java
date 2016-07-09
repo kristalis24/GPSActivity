@@ -12,14 +12,14 @@ import java.util.Date;
  
 public class GpxParserHandler extends DefaultHandler {
  
-	public static interface GpxParserProgressListener {
+	public interface GpxParserProgressListener {
 
-		public void onGpxNewTrackParsed(int count, GPXTrack track);
-        public void onGpxNewRouteParsed(int count, GPXRoute track);
-		public void onGpxNewSegmentParsed(int count, GPXSegment segment);
-		public void onGpxNewTrackPointParsed(int count, GPXTrackPoint trackPoint);
-        public void onGpxNewRoutePointParsed(int count, GPXRoutePoint routePoint);
-		public void onGpxNewWayPointParsed(int count, GPXWayPoint wayPoint);
+		void onGpxNewTrackParsed(int count, GPXTrack track);
+        void onGpxNewRouteParsed(int count, GPXRoute track);
+		void onGpxNewSegmentParsed(int count, GPXSegment segment);
+		void onGpxNewTrackPointParsed(int count, GPXTrackPoint trackPoint);
+        void onGpxNewRoutePointParsed(int count, GPXRoutePoint routePoint);
+		void onGpxNewWayPointParsed(int count, GPXWayPoint wayPoint);
 		
 	}
 	

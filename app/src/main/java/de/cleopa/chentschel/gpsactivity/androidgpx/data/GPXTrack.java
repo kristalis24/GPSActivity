@@ -14,7 +14,7 @@ public class GPXTrack extends GPXBaseEntity {
 		public static final String TAG_DESC = "desc";
 		public static final String TAG_TYPE = "type";
 		
-	};
+	}
 
 	/**
 	 * Name of the track

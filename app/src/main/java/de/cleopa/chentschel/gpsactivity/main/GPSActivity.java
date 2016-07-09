@@ -73,7 +73,7 @@ public class GPSActivity extends AppCompatActivity{//implements GpxParser.GpxPar
                 return true;
             case R.id.men_deleteFile:
                 File file = getExternalFilesDir(null);
-                file = new File(file, "gps.txt");
+                file = new File(file, "gpsactivity.gpx");
                 if (file.delete()){
                     Toast.makeText(getBaseContext(), "Die alte Strecke wurde gelöscht!", Toast.LENGTH_LONG).show();
                 }else{Toast.makeText(getBaseContext(), "Es existiert keine Strecke zum löschen!", Toast.LENGTH_LONG).show();}

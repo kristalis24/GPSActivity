@@ -12,11 +12,11 @@ import java.io.PrintStream;
 
 public class GPXFilePrinter {
 	
-	public static interface GPXFilePrinterListener {
+	public interface GPXFilePrinterListener {
 		
-		public void onGPXPrintStarted();
-		public void onGPXPrintCompleted();
-		public void onGPXPrintError(String message);
+		void onGPXPrintStarted();
+		void onGPXPrintCompleted();
+		void onGPXPrintError(String message);
 		
 	}
 	

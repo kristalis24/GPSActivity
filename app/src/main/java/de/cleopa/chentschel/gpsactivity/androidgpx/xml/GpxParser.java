@@ -44,11 +44,11 @@ public class GpxParser implements GpxParserHandler.GpxParserProgressListener {
     private ArrayList<GPXRoute> mRoutes = new ArrayList<GPXRoute>();
 	private ArrayList<GPXWayPoint> mWayPoints = new ArrayList<GPXWayPoint>();
 	
-	public static interface GpxParserListener {
+	public interface GpxParserListener {
 		
-		public void onGpxParseStarted();
-		public void onGpxParseCompleted(GPXDocument document);
-		public void onGpxParseError(String type, String message, int lineNumber, int columnNumber);
+		void onGpxParseStarted();
+		void onGpxParseCompleted(GPXDocument document);
+		void onGpxParseError(String type, String message, int lineNumber, int columnNumber);
 		
 	}
 	

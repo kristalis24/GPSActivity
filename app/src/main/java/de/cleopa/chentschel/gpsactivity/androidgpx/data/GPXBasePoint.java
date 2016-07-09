@@ -29,8 +29,8 @@ public class GPXBasePoint extends GPXBaseEntity {
 		public static final String TAG_VDOP = "vdop";
 		public static final String TAG_ELE = "ele";
 		
-	};
-	
+	}
+
 	@SuppressWarnings("unused")
 	private static final String TAG = "GPXBasePoint";
 

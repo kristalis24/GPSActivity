@@ -165,7 +165,7 @@ public class KarteAnzeigenSaved extends Activity {
         final Bundle bundle = msg.getData();
         final Location location = (Location) bundle.get("location");
 
-        final String file = new File(getExternalFilesDir(null), "gps.txt").toString();
+        final String file = new File(getExternalFilesDir(null), "gpsactivity.gpx").toString();
 
 //        FileInputStream openFileInput = new FileInputStream(file);
 

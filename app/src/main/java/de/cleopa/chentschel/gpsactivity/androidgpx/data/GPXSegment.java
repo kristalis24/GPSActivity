@@ -9,8 +9,8 @@ public class GPXSegment extends GPXBaseEntity {
 
 		public static final String TAG_TRKSEG = "trkseg";
 		
-	};
-	
+	}
+
 	private ArrayList<GPXTrackPoint> mTrackPoints = new ArrayList<GPXTrackPoint>();
 	
 	public void addPoint(GPXTrackPoint point) {

@@ -10,7 +10,7 @@ public class GPXWayPoint extends GPXBasePoint {
 		
 		public static final String TAG_WPT = "wpt";
 
-	};
+	}
 
 	public GPXWayPoint(float lat, float lon) {
 		super(lat, lon);

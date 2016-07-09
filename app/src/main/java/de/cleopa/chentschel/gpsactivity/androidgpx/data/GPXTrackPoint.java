@@ -10,7 +10,7 @@ public class GPXTrackPoint extends GPXBasePoint {
 		
 		public static final String TAG_TRKPT = "trkpt";
 		
-	};
+	}
 
 	public GPXTrackPoint(float lat, float lon) {
 		super(lat, lon);

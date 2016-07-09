@@ -21,8 +21,8 @@ public class GPXDocument extends GPXBaseEntity {
 		
 		public static final String TAG_GPX = "gpx";
 		
-	};
-	
+	}
+
 	private ArrayList<GPXWayPoint> mWayPoints = null;
 	private ArrayList<GPXTrack> mTracks = null;
     private ArrayList<GPXRoute> mRoutes = null;
