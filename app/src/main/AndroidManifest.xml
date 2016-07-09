@@ -25,16 +25,16 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/api_key_v2" />
 
-        <meta-data
-            android:name="com.google.android.maps.roads.API_KEY"
-            android:value="" />
+        <!--<meta-data-->
+            <!--android:name="com.google.android.maps.roads.API_KEY"-->
+            <!--android:value="" />-->
 
         <meta-data android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <activity
             android:name="de.cleopa.chentschel.gpsactivity.main.GPSActivity"
-            android:label="@string/title_activity_gps"
+            android:label="GPSActivity"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
@@ -44,11 +44,13 @@
         </activity>
 
         <activity android:name="de.cleopa.chentschel.gpsactivity.main.KarteAnzeigen"
-                  android:label="@string/title_activity_gps"/>
+                  android:label="KarteAnzeigen"/>
+
         <activity android:name="de.cleopa.chentschel.gpsactivity.main.KarteAnzeigenSaved"
                   android:label="KarteAnzeigenSaved"/>
-        <activity android:name=".main.Dateiverwaltung"
-                  android:label="Dateiverwaltung"/>
+
+        <activity android:name="de.cleopa.chentschel.gpsactivity.main.AndroidGPSTrackingActivity"
+                  android:label="AndroidGPSTrackingActivity"/>
 
         <service android:name="de.cleopa.chentschel.gpsactivity.service.GeoPositionsService" />
 

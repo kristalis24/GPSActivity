@@ -1,11 +1,9 @@
 package de.cleopa.chentschel.gpsactivity.main;
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,9 +16,9 @@ import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
 
 public class GPSActivity extends AppCompatActivity{//implements GpxParser.GpxParserListener, GpxParserHandler.GpxParserProgressListener{
 
-    public Location location = new Location("location");
-    public GpsData gpsData = new GpsData(location);
-    boolean newFile;
+//    public Location location = new Location("location");
+//    public GpsData gpsData = new GpsData(location);
+//    boolean newFile;
 //    private ProgressDialog mProgressDialog = null;
 //    private static final String TAG =KarteAnzeigen.class.getSimpleName();
 
@@ -51,6 +49,11 @@ public class GPSActivity extends AppCompatActivity{//implements GpxParser.GpxPar
     public void onClickKarteAnzeigenSaved(final View sfNormal){
 //        stopService(new Intent(this, GeoPositionsService.class));
         final Intent intent = new Intent(this, KarteAnzeigenSaved.class);
+        startActivity(intent);
+    }
+
+    public void onClickAndroidGPSTrackingActivity(final View sfNormal){
+        final Intent intent = new Intent(this, AndroidGPSTrackingActivity.class);
         startActivity(intent);
     }
 

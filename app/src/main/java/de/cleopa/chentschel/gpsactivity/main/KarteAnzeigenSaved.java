@@ -31,20 +31,12 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 import de.cleopa.chentschel.gpsactivity.R;
-import de.cleopa.chentschel.gpsactivity.androidgpx.data.GPXBasePoint;
-import de.cleopa.chentschel.gpsactivity.androidgpx.data.GPXDocument;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService.GeoPositionsServiceBinder;
 
@@ -56,19 +48,20 @@ public class KarteAnzeigenSaved extends Activity {
     private Marker mMeinMarker;
     private MapView mMapView;
     private GoogleMap mMap;
-    public static final String IN_PARAM_GEO_POSITION = "location";
-    public static final int TYP_EIGENE_POSITION = 1;
+//    public static final String IN_PARAM_GEO_POSITION = "location";
+//    public static final int TYP_EIGENE_POSITION = 1;
     private static Handler mKarteAnzeigenCallbackHandler;
     private Polyline mVerbindungslinie;
     LatLng latLngA;
     LatLng latLng;
-    boolean newFile = true;
-    StringBuilder s = null;
-    ArrayList<LatLng> list = new ArrayList<LatLng>();
+//    boolean newFile = true;
+//    StringBuilder s = null;
+//    ArrayList<LatLng> list = new ArrayList<LatLng>();
     double latitude;
     double longitude;
     double höhe;
     long time;
+
 //    public static GPXDocument mDocument = null;
 
     @Override
@@ -174,9 +167,9 @@ public class KarteAnzeigenSaved extends Activity {
 
         final String file = new File(getExternalFilesDir(null), "gps.txt").toString();
 
-        FileInputStream openFileInput = new FileInputStream(file);
+//        FileInputStream openFileInput = new FileInputStream(file);
 
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(openFileInput))) {
+//        try (BufferedReader in = new BufferedReader(new InputStreamReader(openFileInput))) {
 
 //            String zeile;
 //            while ((zeile = in.readLine()) != null) {
@@ -208,7 +201,7 @@ public class KarteAnzeigenSaved extends Activity {
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 latLngA = latLng;
             }
-        }
+//        }
 //    }
 
     public void processStartElement (XmlPullParser xpp){

@@ -37,7 +37,6 @@ import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import de.cleopa.chentschel.gpsactivity.R;
 import de.cleopa.chentschel.gpsactivity.service.GeoPositionsService;
@@ -67,15 +66,12 @@ public class KarteAnzeigen extends Activity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        File akte = new File(getExternalFilesDir(null),"gpx.txt");
-        if (akte.exists())
-        {
-            akte.delete();
-            Log.d(TAG, "---> FILE GELÖSCHT <---");
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.karte_anzeigen);
 
+        File akte = new File(getExternalFilesDir(null),"gpx.txt");
+        if (akte.exists()) {newFile = akte.delete();
+            Log.d(TAG, "---> FILE GELÖSCHT <---");}
         if (mMeinePosition != null && mVerbindungslinie != null){mVerbindungslinie.remove();}
         if (mMap != null && mMeinMarker != null){mMeinMarker.remove();}
 
@@ -119,17 +115,17 @@ public class KarteAnzeigen extends Activity{
         super.onPause();
     }
 
-    @Override
-    public void onLowMemory(){
-        super.onLowMemory();
-        mMapView.onLowMemory();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState){
-        super.onSaveInstanceState(outState);
-        mMapView.onSaveInstanceState(outState);
-    }
+//    @Override
+//    public void onLowMemory(){
+//        super.onLowMemory();
+//        mMapView.onLowMemory();
+//    }
+//
+//    @Override
+//    public void onSaveInstanceState(Bundle outState){
+//        super.onSaveInstanceState(outState);
+//        mMapView.onSaveInstanceState(outState);
+//    }
 
     private void initMapView(){
         boolean usePlayService = isGooglePlayServiceAvailable();

@@ -7,18 +7,6 @@
     android:background="@color/background"
     tools:context="de.cleopa.chentschel.gpsactivity.main.GPSActivity">
 
-<!--    <TextView
-        android:id="@+id/app_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:background="@color/colorPrimaryDark"
-        android:textColor="@color/weiss"
-        android:textSize="30sp"
-        android:text="@string/title_activity_gps"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />-->
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -41,6 +29,32 @@
         android:text="@string/btn_gps"
         android:onClick="onClickKarteAnzeigen"
         android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/button_gps_tracking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:textColor="@color/weiss"
+        android:text="Start Android GPS-Tracking Activity"
+        android:layout_below="@+id/button_gps"
+        android:layout_centerHorizontal="true"
+        android:onClick="onClickAndroidGPSTrackingActivity"/>
+
+    <TextView
+        android:id="@+id/txtview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@color/weiss"
+        android:textSize="12sp"
+        android:text="@string/title_activity_gps"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <Button
